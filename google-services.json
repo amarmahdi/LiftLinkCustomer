@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "534665301461",
+    "project_id": "ll-v2-4a68f",
+    "storage_bucket": "ll-v2-4a68f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:534665301461:android:8f2a092f3f43bb1129c15c",
+        "android_client_info": {
+          "package_name": "com.liftlink.customer"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD-1AKB2GkEji5MS9RkI7efL2RDSmHOVmg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

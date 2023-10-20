@@ -1,1 +1,1 @@
-# LiftLinkCutomer
+# LiftLinkCustomer
