@@ -30,5 +30,7 @@ Thumbs.db
 
 /google-services.json
 /.firebaserc
-/firebase-config.json
+firebase-config.js
+firebase.json
+.env
 ```
