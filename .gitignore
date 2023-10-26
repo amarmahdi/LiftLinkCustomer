@@ -28,6 +28,7 @@ yarn-error.log
 Thumbs.db
 
 
-google-services.json
-.firebaserc
+/google-services.json
+/.firebaserc
+/firebase-config.json
 ```

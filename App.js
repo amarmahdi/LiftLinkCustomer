@@ -22,7 +22,7 @@ import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
 import { createClient } from "graphql-ws";
 
 // AsyncStorage.clear();
-const tunnel = true;
+const tunnel = false;
 
 const wsLink = new GraphQLWsLink(
   createClient({
