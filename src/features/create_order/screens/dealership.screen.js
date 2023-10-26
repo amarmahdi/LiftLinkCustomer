@@ -8,7 +8,6 @@ import { SearchCardView } from "./../components/searchCardView.component";
 import MapView from "react-native-maps";
 import { OverlayComponent } from "../../../components/overlay.component";
 import { LabelComponent } from "../../../components/typography";
-import * as ScreenOrientation from 'expo-screen-orientation'
 
 const Container = styled.View`
   flex-direction: column;
@@ -35,7 +34,7 @@ const SearchBarContainer = styled.View`
   background-color: ${(props) => props.theme.colors.bg.secondary};
   padding: 20px;
   position: absolute;
-  top: 0;
+  top: 300px;
   z-index: 1;
   border-bottom-left-radius: 40px;
   border-bottom-right-radius: 40px;
@@ -110,15 +109,6 @@ export const DealershipScreen = ({ navigation }) => {
     setSelectedDealership(dselectd);
     navigation.navigate("Category");
   };
-
-  useEffect(() => {
-    async function setOrientation() {
-      await ScreenOrientation.lockAsync(
-        ScreenOrientation.OrientationLock.UNKNOWN
-      );
-    }
-    setOrientation();
-  }, []);
 
   return (
     <Container>

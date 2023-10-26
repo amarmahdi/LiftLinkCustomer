@@ -7,7 +7,7 @@ import { ButtonComponent } from "../../../components/button.component";
 import { MainContainer } from "../../../components/main.container.component";
 import { LabelComponent } from "../../../components/typography";
 import { Spacer } from "../../../components/utils/spacer.component";
-import { CustomerProfileContext } from "../../../infrastructure/service/customer/context/customer.profile.context";
+import { CustomerContext } from "../../../infrastructure/service/customer/context/customer.context";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
 import ProceedSvg from "../../../../assets/svgs/proceed";
 import DateSvg from "../../../../assets/svgs/date";
@@ -129,7 +129,7 @@ export const ServiceDetailsScreen = ({ navigation }) => {
     selectedCar,
     selectedDealership,
   } = useContext(ServiceContext);
-  const { profile } = useContext(CustomerProfileContext);
+  const { profile } = useContext(CustomerContext);
   const [date, setDate] = useState(new Date());
   const [note, setNote] = useState("");
   const [location, setLocation] = useState("");

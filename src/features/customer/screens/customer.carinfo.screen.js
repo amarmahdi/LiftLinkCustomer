@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import { LabelComponent as Label } from "../../../components/typography/label.component";
 import { MainContainer } from "../../../components/main.container.component";
-import { Alert, ScrollView } from "react-native";
+import { Alert, Platform, ScrollView } from "react-native";
 import { Spacer } from "../../../components/utils/spacer.component";
 import { CamCardComponent } from "../components/camera.card.component";
 import { ButtonComponent } from "../../../components/button.component";
@@ -22,12 +22,18 @@ const Container = styled.View`
   width: 100%;
 `;
 
+const KeyboardAvoidingView = styled.KeyboardAvoidingView`
+  flex: 1;
+  width: 100%;
+`;
+
 const ScrollViewContainer = styled.ScrollView`
   margin: 0;
   padding: 0;
   width: 100%;
   padding-left: 40px;
   padding-right: 40px;
+  margin-bottom: 60px;
 `;
 
 const IncrementBtn = styled.TouchableOpacity`
@@ -60,6 +66,14 @@ const ErrorMessage = styled.Text`
   font-family: ${(props) => props.theme.fonts.title2};
 `;
 
+const ButtonContainer = styled.View`
+  width: 100%;
+  padding-left: 30px;
+  padding-right: 30px;
+  position: absolute;
+  bottom: 20px;
+`;
+
 export const CustomerCarInfoScreen = ({ navigation }) => {
   const [count, setCount] = useState([0]);
   const [progress, setProgress] = useState([0]);
@@ -88,34 +102,34 @@ export const CustomerCarInfoScreen = ({ navigation }) => {
         break;
       }
       if (make[i] === "") {
-        console.log('error')
-        setError([...error.slice(0, i), true, ...error.slice(i + 1)])
+        console.log("error");
+        setError([...error.slice(0, i), true, ...error.slice(i + 1)]);
         break;
-      };
+      }
       if (model[i] === "") {
-        setError([...error.slice(0, i), true, ...error.slice(i + 1)])
+        setError([...error.slice(0, i), true, ...error.slice(i + 1)]);
         break;
-      };
+      }
       if (year[i] === "") {
-        setError([...error.slice(0, i), true, ...error.slice(i + 1)])
+        setError([...error.slice(0, i), true, ...error.slice(i + 1)]);
         break;
-      };
+      }
       if (vin[i] === "") {
-        setError([...error.slice(0, i), true, ...error.slice(i + 1)])
+        setError([...error.slice(0, i), true, ...error.slice(i + 1)]);
         break;
-      };
+      }
       if (plateNumber[i] === "") {
-        setError([...error.slice(0, i), true, ...error.slice(i + 1)])
+        setError([...error.slice(0, i), true, ...error.slice(i + 1)]);
         break;
-      };
+      }
       if (mileage[i] === "") {
-        setError([...error.slice(0, i), true, ...error.slice(i + 1)])
+        setError([...error.slice(0, i), true, ...error.slice(i + 1)]);
         break;
-      };
+      }
       if (insurance[i] === "") {
-        setError([...error.slice(0, i), true, ...error.slice(i + 1)])
+        setError([...error.slice(0, i), true, ...error.slice(i + 1)]);
         break;
-      };
+      }
 
       const imgObjItem = Object.keys(imageObject)[i];
 
@@ -145,7 +159,7 @@ export const CustomerCarInfoScreen = ({ navigation }) => {
 
       if (uploadData) {
         clearImageObject();
-        navigation.navigate("MainNavigation");
+        navigation.navigate("Home");
       } else {
         Alert.alert("Something went wrong");
       }
@@ -191,7 +205,11 @@ export const CustomerCarInfoScreen = ({ navigation }) => {
         const progressPercent = Math.round(
           (progress.loaded / progress.total) * 100
         );
-        setProgress([...progress.slice(0, index), progressPercent, ...progress.slice(index + 1)]);
+        setProgress([
+          ...progress.slice(0, index),
+          progressPercent,
+          ...progress.slice(index + 1),
+        ]);
       }
     );
     return data.url;
@@ -205,135 +223,166 @@ export const CustomerCarInfoScreen = ({ navigation }) => {
     console.log(error, "error");
   }, [error]);
 
-
   return (
-    <ScrollViewContainer>
-      <Container
-        styles={{
-          flexDirection: "column",
-          justifyContent: "flex-start",
-          alignItems: "flex-start",
-        }}
-      ></Container>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
       <>
-        <Spacer variant="top.large" />
-        <Label title2={true}>Loaner Car: All Side Picture</Label>
-        <Spacer variant="top.medium" />
-        <ScrollView>
-          {count.map((item, index) => {
-            return (
-              <>
-                <Spacer variant="top.large" />
-                <Spacer variant="top.large" />
-                <StyledText>{progress[index]}</StyledText>
-                <Spacer variant="top.large" />
-                {count.length > 1 && (
-                  <IncrementBtn onPress={() => decrement(item, index)}>
-                    <ButtonLabel style={{ color: "red" }}>X</ButtonLabel>
-                  </IncrementBtn>
-                )}
-                <Spacer variant="top.small" />
-                <CamCardComponent _key={item + "_" + index} />
-                <Spacer variant="top.large" />
-                <LabelFormComponent size={"100%"}>Car Make</LabelFormComponent>
-                <Spacer variant="top.small" />
-                <InputComponent
-                  placeholder="Enter Car Make"
-                  onChangeText={(e) => setMake(handleInput(e, item, make))}
-                />
-                <Spacer variant="top.small" />
-                <ErrorMessage>
-                  {make[index] === "" && error[index] ? "This field is required" : ""}
-                </ErrorMessage>
-                <Spacer variant="top.large" />
-                <LabelFormComponent size={"100%"}>Car Model</LabelFormComponent>
-                <Spacer variant="top.small" />
-                <InputComponent
-                  placeholder="Enter Car Model"
-                  onChangeText={(e) => setModel(handleInput(e, item, model))}
-                />
-                <Spacer variant="top.small" />
-                <ErrorMessage>
-                  {model[index] === "" && error[index] ? "This field is required" : ""}
-                </ErrorMessage>
-                <Spacer variant="top.large" />
-                <LabelFormComponent size={"100%"}>Car Year</LabelFormComponent>
-                <Spacer variant="top.small" />
-                <InputComponent
-                  placeholder="Enter Car Year"
-                  onChangeText={(e) => setYear(handleInput(e, item, year))}
-                />
-                <Spacer variant="top.small" />
-                <ErrorMessage>
-                  {year[index] === ""  && error[index] ? "This field is required" : ""}
-                </ErrorMessage>
-                <Spacer variant="top.large" />
-                <LabelFormComponent size={"100%"}>Car Vin</LabelFormComponent>
-                <Spacer variant="top.small" />
-                <InputComponent
-                  placeholder="Enter Car Vin"
-                  onChangeText={(e) => setVin(handleInput(e, item, vin))}
-                />
-                <Spacer variant="top.small" />
-                <ErrorMessage>
-                  {vin[index] === ""  && error[index] ? "This field is required" : ""}
-                </ErrorMessage>
-                <Spacer variant="top.large" />
-                <LabelFormComponent size={"100%"}>
-                  Car Plate Number
-                </LabelFormComponent>
-                <Spacer variant="top.small" />
-                <InputComponent
-                  placeholder="Enter Car Plate Number"
-                  onChangeText={(e) =>
-                    setPlateNumber(handleInput(e, item, plateNumber))
-                  }
-                />
-                <Spacer variant="top.small" />
-                <ErrorMessage>
-                  {plateNumber[index] === ""  && error[index] ? "This field is required" : ""}
-                </ErrorMessage>
-                <Spacer variant="top.large" />
-                <LabelFormComponent size={"100%"}>
-                  Car Mileage
-                </LabelFormComponent>
-                <Spacer variant="top.small" />
-                <InputComponent
-                  placeholder="Enter Car Mileage"
-                  onChangeText={(e) =>
-                    setMileage(handleInput(e, item, mileage))
-                  }
-                />
-                <Spacer variant="top.small" />
-                <ErrorMessage>
-                  {mileage[index] === ""  && error[index] ? "This field is required" : ""}
-                </ErrorMessage>
-                <Spacer variant="top.large" />
-                <LabelFormComponent size={"100%"}>
-                  Car Insurance
-                </LabelFormComponent>
-                <Spacer variant="top.small" />
-                <InputComponent
-                  placeholder="Enter Car Insurance"
-                  onChangeText={(e) =>
-                    setInsurance(handleInput(e, item, insurance))
-                  }
-                />
-                <Spacer variant="top.small" />
-                <ErrorMessage>
-                  {insurance[index] === ""  && error[index] ? "This field is required" : ""}
-                </ErrorMessage>
-                <Spacer variant="top.large" />
-              </>
-            );
-          })}
-          <IncrementBtn onPress={increment}>
-            <ButtonLabel>+</ButtonLabel>
-          </IncrementBtn>
-          <Spacer variant="top.large" />
+        <ScrollViewContainer>
+          <Container
+            styles={{
+              flexDirection: "column",
+              justifyContent: "flex-start",
+              alignItems: "flex-start",
+            }}
+          ></Container>
+          <>
+            <Spacer variant="top.large" />
+            <Label title2={true}>Loaner Car: All Side Picture</Label>
+            <Spacer variant="top.medium" />
+            <ScrollView>
+              {count.map((item, index) => {
+                return (
+                  <>
+                    <Spacer variant="top.large" />
+                    <Spacer variant="top.large" />
+                    <StyledText>{progress[index]}</StyledText>
+                    <Spacer variant="top.large" />
+                    {count.length > 1 && (
+                      <IncrementBtn onPress={() => decrement(item, index)}>
+                        <ButtonLabel style={{ color: "red" }}>X</ButtonLabel>
+                      </IncrementBtn>
+                    )}
+                    <Spacer variant="top.small" />
+                    <CamCardComponent _key={item + "_" + index} />
+                    <Spacer variant="top.large" />
+                    <LabelFormComponent size={"100%"}>
+                      Car Make
+                    </LabelFormComponent>
+                    <Spacer variant="top.small" />
+                    <InputComponent
+                      placeholder="Enter Car Make"
+                      onChangeText={(e) => setMake(handleInput(e, item, make))}
+                    />
+                    <Spacer variant="top.small" />
+                    <ErrorMessage>
+                      {make[index] === "" && error[index]
+                        ? "This field is required"
+                        : ""}
+                    </ErrorMessage>
+                    <Spacer variant="top.large" />
+                    <LabelFormComponent size={"100%"}>
+                      Car Model
+                    </LabelFormComponent>
+                    <Spacer variant="top.small" />
+                    <InputComponent
+                      placeholder="Enter Car Model"
+                      onChangeText={(e) =>
+                        setModel(handleInput(e, item, model))
+                      }
+                    />
+                    <Spacer variant="top.small" />
+                    <ErrorMessage>
+                      {model[index] === "" && error[index]
+                        ? "This field is required"
+                        : ""}
+                    </ErrorMessage>
+                    <Spacer variant="top.large" />
+                    <LabelFormComponent size={"100%"}>
+                      Car Year
+                    </LabelFormComponent>
+                    <Spacer variant="top.small" />
+                    <InputComponent
+                      placeholder="Enter Car Year"
+                      onChangeText={(e) => setYear(handleInput(e, item, year))}
+                    />
+                    <Spacer variant="top.small" />
+                    <ErrorMessage>
+                      {year[index] === "" && error[index]
+                        ? "This field is required"
+                        : ""}
+                    </ErrorMessage>
+                    <Spacer variant="top.large" />
+                    <LabelFormComponent size={"100%"}>
+                      Car Vin
+                    </LabelFormComponent>
+                    <Spacer variant="top.small" />
+                    <InputComponent
+                      placeholder="Enter Car Vin"
+                      onChangeText={(e) => setVin(handleInput(e, item, vin))}
+                    />
+                    <Spacer variant="top.small" />
+                    <ErrorMessage>
+                      {vin[index] === "" && error[index]
+                        ? "This field is required"
+                        : ""}
+                    </ErrorMessage>
+                    <Spacer variant="top.large" />
+                    <LabelFormComponent size={"100%"}>
+                      Car Plate Number
+                    </LabelFormComponent>
+                    <Spacer variant="top.small" />
+                    <InputComponent
+                      placeholder="Enter Car Plate Number"
+                      onChangeText={(e) =>
+                        setPlateNumber(handleInput(e, item, plateNumber))
+                      }
+                    />
+                    <Spacer variant="top.small" />
+                    <ErrorMessage>
+                      {plateNumber[index] === "" && error[index]
+                        ? "This field is required"
+                        : ""}
+                    </ErrorMessage>
+                    <Spacer variant="top.large" />
+                    <LabelFormComponent size={"100%"}>
+                      Car Mileage
+                    </LabelFormComponent>
+                    <Spacer variant="top.small" />
+                    <InputComponent
+                      placeholder="Enter Car Mileage"
+                      onChangeText={(e) =>
+                        setMileage(handleInput(e, item, mileage))
+                      }
+                    />
+                    <Spacer variant="top.small" />
+                    <ErrorMessage>
+                      {mileage[index] === "" && error[index]
+                        ? "This field is required"
+                        : ""}
+                    </ErrorMessage>
+                    <Spacer variant="top.large" />
+                    <LabelFormComponent size={"100%"}>
+                      Car Insurance
+                    </LabelFormComponent>
+                    <Spacer variant="top.small" />
+                    <InputComponent
+                      placeholder="Enter Car Insurance"
+                      onChangeText={(e) =>
+                        setInsurance(handleInput(e, item, insurance))
+                      }
+                    />
+                    <Spacer variant="top.small" />
+                    <ErrorMessage>
+                      {insurance[index] === "" && error[index]
+                        ? "This field is required"
+                        : ""}
+                    </ErrorMessage>
+                    <Spacer variant="top.large" />
+                  </>
+                );
+              })}
+              <IncrementBtn onPress={increment}>
+                <ButtonLabel>+</ButtonLabel>
+              </IncrementBtn>
+              <Spacer variant="top.large" />
+            </ScrollView>
+          </>
+        </ScrollViewContainer>
+        <ButtonContainer>
           <ButtonComponent title="Next" onPress={() => uploadImages()} />
-        </ScrollView>
+        </ButtonContainer>
       </>
-    </ScrollViewContainer>
+    </KeyboardAvoidingView>
   );
 };

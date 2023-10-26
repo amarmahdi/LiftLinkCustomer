@@ -1,14 +1,15 @@
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable react/prop-types */
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { LabelComponent } from "../../../components/typography/label.component";
 import { MainContainer } from "../../../components/main.container.component";
 import { Spacer } from "../../../components/utils/spacer.component";
 import styled from "styled-components/native";
 import RedirectIcon from "../../../../assets/svgs/redirect";
 import { Pressable } from "react-native";
-import { CustomerProfileContext } from "../../../infrastructure/service/customer/context/customer.profile.context";
+import { CustomerContext } from "../../../infrastructure/service/customer/context/customer.context";
 import { ServiceContext } from "../../../infrastructure/service/create_service/context/service.context";
+import { isObjEmpty } from "./main.screen";
 
 const AvatarContainer = styled.View`
   flex-direction: row;
@@ -121,8 +122,26 @@ const ScrollViewContainer = styled.View`
 `;
 
 export const HomeScreen = ({ navigation }) => {
-  const { profile } = useContext(CustomerProfileContext);
-  const { setSelectedCar } = useContext(ServiceContext);
+  const { profile } = useContext(CustomerContext);
+  const {
+    setSelectedCar,
+    getStartedOrders,
+    getStartedOrdersData,
+    selectedOrder,
+    setSelectedOrder,
+  } = useContext(ServiceContext);
+  const [startedServices, setStartedServices] = useState([]);
+
+  useEffect(() => {
+    getStartedOrders();
+  }, []);
+
+  useEffect(() => {
+    if (!isObjEmpty(getStartedOrdersData)) {
+      console.log("getStartedOrdersData", getStartedOrdersData.getOrdersByUser);
+      setStartedServices(getStartedOrdersData.getOrdersByUser);
+    }
+  }, [getStartedOrdersData]);
 
   return (
     <MainContainer
@@ -148,6 +167,39 @@ export const HomeScreen = ({ navigation }) => {
           pinchGestureEnabled={true}
         >
           {profile.car.map((item) => {
+            if (!isObjEmpty(startedServices)) {
+              return startedServices.map((service) => {
+                if (
+                  service.vehicle.carImage.imageId === item.carImage.imageId
+                ) {
+                  return (
+                    <ListContainer
+                      onPress={async () => {
+                        await setSelectedOrder(service);
+                        navigation.navigate("Details");
+                      }}
+                    >
+                      <ListCard>
+                        <ListComponent>
+                          <CarDescription>
+                            <LabelComponent>
+                              {item.carMake} {item.carModel}
+                            </LabelComponent>
+                            <LabelComponent title2={true}>
+                              You have a service in progress
+                            </LabelComponent>
+                          </CarDescription>
+                          <RedirectIcon width={24} height={24} />
+                        </ListComponent>
+                        <CarImageContainer>
+                          <CarImage source={{ uri: item.carImage.imageLink }} />
+                        </CarImageContainer>
+                      </ListCard>
+                    </ListContainer>
+                  );
+                }
+              });
+            }
             return (
               <ListContainer
                 onPress={async () => {

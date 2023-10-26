@@ -1,18 +1,20 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Container } from "./utils/container.component";
 import styled from "styled-components/native";
 import Menu from "../../assets/svgs/menu";
 import { AvatarComponent } from "./utils/avatar.component";
 import { Pressable } from "react-native";
+import { isObjEmpty } from "../features/main/screen/main.screen";
+import LogoText from "../../assets/svgs/logo_text";
+import { LabelComponent } from "./typography";
+import { CustomerContext } from "../infrastructure/service/customer/context/customer.context";
 
 const BodyTitleSection = styled.View`
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  align-self: flex-start;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
   width: 100%;
-  margin-bottom: 20px;
 `;
 
 const LogoSection = styled.View`
@@ -35,13 +37,12 @@ const LogoTextDark = styled.Text`
 `;
 
 const HeaderBackground = styled.View`
-  background-color: ${(props) => props.theme.colors.bg.secondary};
   border-bottom-left-radius: 40px;
   border-bottom-right-radius: 40px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: ${(props) => props.theme.space[3]};
+  padding: 30px;
   width: 100%;
   height: ${(props) => (props.showTab ? "220px" : "180px")};
   flex-direction: row;
@@ -59,6 +60,16 @@ const TabsContainer = styled.View`
   padding-bottom: 20px;
 `;
 
+const PostitionedBackgroundImage = styled.Image`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: ${(props) => (props.showTab ? "220px" : "180px")};
+  border-bottom-left-radius: 40px;
+  border-bottom-right-radius: 40px;
+`;
+
 export const MainContainer = ({
   children,
   title = "Enhance the Luxury Evolution.",
@@ -69,10 +80,12 @@ export const MainContainer = ({
   showTab = false,
   tabs,
   styles,
-  imageUrl,
   isLoading = true,
+  initial = true,
 }) => {
   const [tabList, setTabList] = useState(null);
+  const { profile } = useContext(CustomerContext);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (tabs) {
@@ -80,23 +93,39 @@ export const MainContainer = ({
     }
   }, [tabs]);
 
+  useEffect(() => {
+    if (!isObjEmpty(profile)) {
+      setLoading(false);
+    }
+  }, [profile]);
+
   return (
     <Container styles={styles}>
+      <PostitionedBackgroundImage
+        source={require("../../assets/headerBg.png")}
+        showTab={showTab}
+      />
       <HeaderBackground showTab={showTab}>
         {showLogo && (
-          <BodyTitleSection>
-            <LogoSection>
-              <LogoTextLight>Lift</LogoTextLight>
-              <LogoTextDark>Link</LogoTextDark>
-            </LogoSection>
-          </BodyTitleSection>
+          <>
+            <BodyTitleSection>
+              <LogoSection>
+                <LogoText width={100} height={20} scale={1.2} />
+              </LogoSection>
+              {initial && (
+                <LabelComponent title3={true} inverted={true}>
+                  Enhance the Luxury Evolution.
+                </LabelComponent>
+              )}
+            </BodyTitleSection>
+          </>
         )}
 
-        {showAvatar && (
+        {showAvatar && !loading && (
           <AvatarComponent
             showGreetings={showGreetings}
-            fullName={title}
-            imageUrl={imageUrl}
+            fullName={title || `${profile.firstName} ${profile.lastName}`}
+            imageUrl={profile.profilePicture.pictureLink}
           />
         )}
         {showMenu && <Menu width={32} height={32} />}

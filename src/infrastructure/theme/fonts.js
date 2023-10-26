@@ -4,6 +4,9 @@ export const fonts = {
   cardTitle: "PPAgrandir-GrandHeavy",
   date: "PPMori-ExtraLight",
   body: "PPMori-SemiBold",
+  neueBold: "Neue-bold",
+  neueMedium: "Neue-medium",
+  neueBlack: "Neue-black",
 };
 
 export const fontWeights = {

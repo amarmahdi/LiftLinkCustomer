@@ -1,6 +1,11 @@
 import React, { useContext, useState, createContext } from "react";
 import { useLazyQuery, useMutation } from "@apollo/client";
-import { FIND_DEALERSHIP, FIND_SERVICES } from "../../query";
+import {
+  FIND_DEALERSHIP,
+  FIND_SERVICES,
+  GET_STARTED_ORDERS,
+  GET_VALET,
+} from "../../query";
 import { CREATE_ORDER } from "../../mutation";
 
 export const ServiceContext = createContext();
@@ -49,9 +54,18 @@ export const ServiceContextProvider = ({ children }) => {
     { loading: serviceLoading, data: serviceData, error: serviceError },
   ] = useLazyQuery(FIND_SERVICES);
   // create order
-  const [createOrder, { loading: orderLoading, data: orderData }] = useMutation(
-    CREATE_ORDER
-  );
+  const [createOrder, { loading: orderLoading, data: orderData }] =
+    useMutation(CREATE_ORDER);
+  const [
+    getStartedOrders,
+    { loading: getStartedOrdersLoading, data: getStartedOrdersData },
+  ] = useLazyQuery(GET_STARTED_ORDERS);
+  const [selectedOrder, setSelectedOrder] = useState({});
+  const [
+    getValet,
+    { loading: getValetLoading, data: getValetData, error: getValetError },
+  ] = useLazyQuery(GET_VALET);
+  const [valet, setValet] = useState({});
 
   return (
     <ServiceContext.Provider
@@ -88,6 +102,21 @@ export const ServiceContextProvider = ({ children }) => {
         createOrder,
         orderLoading,
         orderData,
+        // get started orders
+        getStartedOrders,
+        getStartedOrdersLoading,
+        getStartedOrdersData,
+        // selected order
+        selectedOrder,
+        setSelectedOrder,
+        // get valet
+        getValet,
+        getValetLoading,
+        getValetData,
+        getValetError,
+        // valet
+        valet,
+        setValet,
       }}
     >
       {children}

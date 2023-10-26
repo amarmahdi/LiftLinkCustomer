@@ -33,8 +33,6 @@ const Button = styled.TouchableOpacity`
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  <Spacer variant="top.large" />
-  background-color: ${(props) => props.theme.colors.buttonColors.primary};
   border-radius: 20px;
   padding: 10px 40px 10px 40px;
   gap: 10px;
@@ -72,7 +70,6 @@ export const CamCardComponent = ({ imageLink, _key, clearContainer }) => {
     }
   };
 
-
   const takeImage = async () => {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
     if (status !== "granted") {
@@ -95,10 +92,11 @@ export const CamCardComponent = ({ imageLink, _key, clearContainer }) => {
     }
   };
 
-  // console.log(image, "from cam card component")
-
-   return (
-    <CardComponent key={_key} overrideChildren={true}>
+  return (
+    <CardComponent key={_key} overrideChildren={true} bordered={true} size={{
+      height: 250,
+      width: "100%",
+    }}>
       <CustomCard>
         {image && !imageLink ? (
           <Picture
@@ -110,7 +108,7 @@ export const CamCardComponent = ({ imageLink, _key, clearContainer }) => {
         {!image && imageLink && (
           <Picture
             source={{ uri: imageLink }}
-            onError={(error)=> console.log(error, "from image")}
+            onError={(error) => console.log(error, "from image")}
             style={{ width: 180, height: 180, marginBottom: 10 }}
           />
         )}

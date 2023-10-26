@@ -1,10 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
-import { CustomerContext } from "../../../infrastructure/service/customer/context/customer.context";
 import styled from "styled-components/native";
 import { LabelComponent } from "../../../components/typography/label.component";
 import { Spacer } from "../../../components/utils/spacer.component";
 import { ButtonComponent } from "../../../components/button.component";
 import { AuthContext } from "../../../infrastructure/service/authentication/context/auth.context";
+import { Alert } from "react-native";
+import { CustomerContext } from "../../../infrastructure/service/customer/context/customer.context";
 
 const Container = styled.View`
   flex: 1;
@@ -49,42 +50,55 @@ const LabelContainer = styled.View`
 `;
 
 export const Splash = ({ navigation }) => {
-  const { isAuthenticated, loading: authLoading } = useContext(AuthContext);
+  const {
+    isAuthenticated,
+    loading: authLoading,
+    err,
+  } = useContext(AuthContext);
   const { profile, loading, getUserData } = useContext(CustomerContext);
   const [loadingState, setLoadingState] = useState(true);
 
   useEffect(() => {
-    console.log("isAuthenticated loading", authLoading);
-    if (!authLoading && isAuthenticated) {
-      getUserData();
+    if (!loading && !authLoading && !err) {
+      setLoadingState(false);
+      changeScreen();
     }
-    console.log("profile", profile)
-  }, [authLoading]);
+  }, [loading, authLoading]);
 
   useEffect(() => {
-    if (!loading) {
-      if (isAuthenticated && Object.keys(profile).length !== 0) {
-        setTimeout(() => {
-          navigation.navigate("MainNavigation");
-        }, 2000);
-      } 
-      else if (!isAuthenticated && Object.keys(profile).length === 0) {
-        setTimeout(() => {
-          navigation.navigate("SigninNavigation");
-        }, 2000);
-      }
+    if (err) {
+      setLoadingState(false);
+      Alert.alert("Alert!", "Internal Server Error. Please try again.");
     }
-  }, [loading]);
+  }, [err]);
 
-  // useEffect(() => {
-  //   console.log("loadingState", loading);
-  // } ,[]);
+  const handleGetStarted = async () => {
+    console.log("isAuthenticated loading", authLoading);
+    await getUserData();
+    if (!loading && !authLoading && !err) {
+      changeScreen();
+    }
+  };
+
+  const changeScreen = () => {
+    if (isAuthenticated && Object.keys(profile).length !== 0) {
+      setTimeout(() => {
+        navigation.navigate("MainNavigation");
+      }, 2000);
+    } else if (!isAuthenticated && Object.keys(profile).length === 0 && !err) {
+      setTimeout(() => {
+        navigation.navigate("AuthNavigation");
+      }, 2000);
+    }
+  };
+
+  useEffect(() => {
+    handleGetStarted();
+  }, []);
 
   return (
     <Container>
-      {/* <ForegroundOverlay /> */}
       <OverlayImg source={require("../../../../assets/splashbackground.png")} />
-      {/* <CarImg source={require("../../../../assets/imgs/carImg.jpeg")} /> */}
       <LabelContainer>
         <LabelComponent
           title1={true}

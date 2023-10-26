@@ -9,10 +9,10 @@ import { getGeocode } from "../service/dealershipInfo.service";
 
 const CardItemsContainer = styled.Pressable`
   flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
+  justify-content: center;
+  align-items: center;
   width: 100%;
-  padding: 10px;
+  padding: 20px;
   height: 100%;
 `;
 
@@ -24,7 +24,13 @@ const CardHeader = styled.View`
   height: 50px;
 `;
 
-const TextContainer = styled.View``;
+const TextContainer = styled.View`
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 100%;
+  padding-left: 10px;
+`;
 
 const Title = styled.Text`
   color: ${(props) => props.theme.colors.darkText.inverse};
@@ -77,6 +83,7 @@ export const SearchCardView = ({ data, title, address, country, city, key }) => 
   return (
     <>
       <CardComponent
+        order={true}
         overrideChildren={true}
         backgroundColor={
           !selected ? theme.colors.bg.secondary : theme.colors.bg.primary

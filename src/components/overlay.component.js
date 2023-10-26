@@ -14,6 +14,8 @@ const Overlay = styled.View`
   background-color: rgba(0, 0, 0, 0.5);
   filter: blur(10px);
   z-index: 2;
+  justify-content: center;
+  align-items: center;
 `;
 
 const OverlayContent = styled.View`
@@ -24,10 +26,11 @@ const OverlayContent = styled.View`
   padding-left: 20px;
   padding-right: 20px;
   width: 300px;
-  height: 250px;
+  height: 300px;
   top: 50%;
   left: 50%;
   transform: translate(-150px, -125px);
+  border-radius: 20px;
 `;
 
 // const ButtonContainer = styled.View`
@@ -58,18 +61,30 @@ const ChildrenContainer = styled.View`
   margin-top: 20px;
 `;
 
-export const OverlayComponent = ({ children, onCancel, onConfirm, btnText }) => {
+export const OverlayComponent = ({
+  children,
+  onCancel,
+  onConfirm,
+  btnText,
+  override = false,
+  style = {},
+}) => {
   return (
-    <Overlay>
-      <OverlayContent>
-        <CancelButton onPress={onCancel}>
-          <CancelSvg width={24} height={24} />
-        </CancelButton>
-        <ChildrenContainer>{children}</ChildrenContainer>
-        <ConfirmButton onPress={onConfirm} title={btnText || "Confirm"}>
-          <ConfirmSvg isIcon={true} width={24} height={24} />
-        </ConfirmButton>
-      </OverlayContent>
-    </Overlay>
+    <>
+      {!override && (
+        <Overlay>
+          <OverlayContent>
+            <CancelButton onPress={onCancel}>
+              <CancelSvg width={24} height={24} />
+            </CancelButton>
+            <ChildrenContainer>{children}</ChildrenContainer>
+            <ConfirmButton onPress={onConfirm} title={btnText || "Confirm"}>
+              <ConfirmSvg isIcon={true} width={24} height={24} />
+            </ConfirmButton>
+          </OverlayContent>
+        </Overlay>
+      )}
+      {override && <Overlay style={style}>{children}</Overlay>}
+    </>
   );
 };

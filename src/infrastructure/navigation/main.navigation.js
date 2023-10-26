@@ -9,6 +9,7 @@ import { CustomerContext } from "../service/customer/context/customer.context";
 import styled from "styled-components/native";
 import { MainScreen } from "../../features/main/screen/main.screen";
 import { ServiceNavigation } from "./service.navigation";
+import { OrderDetailsScreen } from "../../features/order_info/screens/order.details.screen";
 
 const Stack = createStackNavigator();
 
@@ -26,6 +27,7 @@ export const MainNavigator = () => {
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Profile" component={CustomerNavigation} />
         <Stack.Screen name="Service" component={ServiceNavigation} />
+        <Stack.Screen name="Details" component={OrderDetailsScreen} />
       </>
     </Stack.Navigator>
   );

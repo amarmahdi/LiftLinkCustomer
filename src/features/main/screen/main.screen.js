@@ -1,14 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
-import { View, Text, Image } from "react-native";
+import LogoSvg from "../../../../assets/svgs/logoLoadingIndicator";
+import styled from "styled-components/native";
 import { CustomerContext } from "../../../infrastructure/service/customer/context/customer.context";
-import { MainContainer } from "../../../components/main.container.component";
-import ContentLoader, { Circle, Rect } from "react-content-loader/native";
-import { buttonSizes } from "../../../infrastructure/theme/sizes";
-import LogoSvg from "../../../../assets/svgs/logo";
-import styled from "styled-components";
 
 export const isObjEmpty = (obj) => {
-  return typeof obj === "undefined"
+  return typeof obj === "undefined" || obj === null
     ? true
     : Object.keys(obj).length === 0
     ? true
@@ -58,7 +54,7 @@ export const MainScreen = ({ navigation }) => {
   };
 
   const changePage = async () => {
-    if (isObjEmpty(profile.profilePicture) && isObjEmpty(profile.car)) {
+    if (!profile.isVerified || isObjEmpty(profile.car) || isObjEmpty(profile.profilePicture) && !userContextLoading) {
       navigation.navigate("Profile");
     } else {
       navigation.navigate("Home");

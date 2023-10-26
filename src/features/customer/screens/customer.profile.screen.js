@@ -8,11 +8,12 @@ import { Container } from "../../../components/utils/container.component";
 import { ButtonComponent } from "../../../components/button.component";
 import * as ImagePicker from "expo-image-picker";
 import { uploadToFirebase } from "../../../../firebase-config";
-import { CustomerProfileContext } from "../../../infrastructure/service/customer/context/customer.profile.context";
+import { CustomerContext } from "../../../infrastructure/service/customer/context/customer.context";
 import { useMutation } from "@apollo/client";
 import { UPLOAD_PROFILE_PICTURE } from "../../../infrastructure/service/mutation";
 import { CamCardComponent } from "../components/camera.card.component";
 import { ImageContainerContext } from "../utils/imageObjectContainer";
+import { screens } from "../customer.screen";
 
 const ScrollViewContainer = styled.ScrollView`
   margin: 0;
@@ -22,49 +23,17 @@ const ScrollViewContainer = styled.ScrollView`
   padding-right: 40px;
 `;
 
-const ImageUploadContainer = styled.View`
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 250px;
-  border: 1px solid ${(props) => props.theme.colors.bg.secondary};
-  border-radius: 20px;
-  gap: 10px;
-`;
-
 const ButtonContainer = styled.View`
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-`;
-
-const Button = styled.TouchableOpacity`
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  background-color: ${(props) => props.theme.colors.buttonColors.primary};
-  border-radius: 20px;
-  padding: 10px 40px 10px 40px;
-  gap: 10px;
-  widht: 100%;
-`;
-
-const ButtonLabel = styled.Text`
-  color: ${(props) => props.theme.colors.text.inverse};
-  font-size: ${(props) => props.theme.fontSizes.body};
-  font-family: ${(props) => props.theme.fonts.body};
-`;
-
-const ProfilePicture = styled.Image`
-  height: 100%;
-  border-radius: 20px;
+  padding-left: 30px;
+  padding-right: 30px;
+  width: 100%;
+  position: absolute;
+  bottom: 20px;
 `;
 
 export const CustomerProfileScreen = ({ navigation }) => {
-  const { setPage, profile, profileLoading } = useContext(
-    CustomerProfileContext
+  const { profile, profileLoading, setScreen } = useContext(
+    CustomerContext
   );
   const { imageObject, clearImageObject } = useContext(ImageContainerContext);
   const [uploadImage] = useMutation(UPLOAD_PROFILE_PICTURE);
@@ -93,7 +62,7 @@ export const CustomerProfileScreen = ({ navigation }) => {
       })
         .then(() => {
           clearImageObject();
-          setPage("CustomerCarInfo");
+          setScreen(screens.carInfo);
         })
         .catch((error) => {
           console.log(error, "error from uploadImage#############");
@@ -104,42 +73,46 @@ export const CustomerProfileScreen = ({ navigation }) => {
   };
 
   return (
-    <ScrollViewContainer>
-      <Container
-        styles={{
-          flexDirection: "column",
-          justifyContent: "flex-start",
-          alignItems: "flex-start",
-        }}
-      >
+    <>
+      <ScrollViewContainer>
+        <Container
+          styles={{
+            flexDirection: "column",
+            justifyContent: "flex-start",
+            alignItems: "flex-start",
+          }}
+        >
+          <Spacer variant="top.large" />
+          <Label title2={true}>
+            Enter the required information mentioned down below.
+          </Label>
+          <Spacer variant="top.medium" />
+          <Label>Profile Image</Label>
+          <Label>{progress.toLocaleString(1)}</Label>
+          <Spacer variant="top.small" />
+          <CamCardComponent />
+          <Spacer variant="top.small" />
+          <Label title2={true}>Click to add image.</Label>
+        </Container>
         <Spacer variant="top.large" />
-        <Label title2={true}>
-          Enter the required information mentioned down below.
-        </Label>
-        <Spacer variant="top.medium" />
-        <Label>Profile Image</Label>
-        <Label>{progress.toLocaleString(1)}</Label>
-        <Spacer variant="top.small" />
-        <CamCardComponent />
-        <Spacer variant="top.small" />
-        <Label title2={true}>Click to add image.</Label>
-      </Container>
-      <Spacer variant="top.large" />
-      <ButtonComponent
-        title="Next"
-        onPress={async () => {
-          if (
-            typeof imageObject !== "undefined" &&
-            Object.keys(imageObject).length !== 0
-          ) {
-            await handleUpload();
-          } else {
-            setPage("CustomerCarInfo");
-            clearImageObject();
-          }
-        }}
-        icon={<RedirectIcon width={24} height={24} />}
-      />
-    </ScrollViewContainer>
+      </ScrollViewContainer>
+      <ButtonContainer>
+        <ButtonComponent
+          title="Next"
+          onPress={async () => {
+            if (
+              typeof imageObject !== "undefined" &&
+              Object.keys(imageObject).length !== 0
+            ) {
+              await handleUpload();
+            } else {
+              setScreen(screens.carInfo);
+              clearImageObject();
+            }
+          }}
+          icon={<RedirectIcon width={24} height={24} />}
+        />
+      </ButtonContainer>
+    </>
   );
 };
