@@ -2,9 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components/native";
 import { InputComponent } from "../../../components/input.component";
 import { ServiceContext } from "../../../infrastructure/service/create_service/context/service.context";
-import { isObjEmpty } from "../../main/screen/main.screen";
 import { ButtonComponent } from "../../../components/button.component";
-import { MainContainer } from "../../../components/main.container.component";
 import { LabelComponent } from "../../../components/typography";
 import { Spacer } from "../../../components/utils/spacer.component";
 import { CustomerContext } from "../../../infrastructure/service/customer/context/customer.context";
@@ -12,8 +10,11 @@ import RNDateTimePicker from "@react-native-community/datetimepicker";
 import ProceedSvg from "../../../../assets/svgs/proceed";
 import DateSvg from "../../../../assets/svgs/date";
 import { OverlayComponent } from "../../../components/overlay.component";
-import { Platform } from "react-native";
-import { ChipComponent } from "../../../components/utils/chip.component";
+import { AvatarDetailComponent } from "../../../components/avatar.detail.component";
+import { Picker } from "@react-native-picker/picker";
+import { KeyboardAvoidingView, Platform, ScrollView } from "react-native";
+import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
+import { theme } from "../../../infrastructure/theme";
 
 const Container = styled.ScrollView`
   flex-direction: column;
@@ -52,46 +53,6 @@ const HeaderTitleContainer = styled.View`
   height: 300px;
 `;
 
-const AvatarContainer = styled.View`
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const Avatar = styled.View`
-  width: 54px;
-  height: 54px;
-  border-radius: 20px;
-  background-color: ${(props) => props.theme.colors.brand.primary};
-`;
-
-const AvatarImage = styled.Image`
-  width: 54px;
-  height: 54px;
-  border-radius: 20px;
-`;
-
-const UserInfoContainer = styled.View`
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  height: 100px;
-`;
-
-const UserProfileContainer = styled.View`
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  height: 100px;
-`;
-
-const DateTimePickerInput = styled.TextInput`
-  flex: 1;
-  color: ${(props) => props.theme.colors.darkText.primary};
-  font-family: ${(props) => props.theme.fonts.body};
-  font-size: ${(props) => props.theme.fontSizes.body};
-`;
-
 const DateTimePickerContainer = styled.Pressable`
   background-color: ${(props) => props.theme.colors.bg.primary};
   border-radius: ${(props) => props.theme.borderRadiuses[3]};
@@ -125,10 +86,10 @@ export const ServiceDetailsScreen = ({ navigation }) => {
   const [date, setDate] = useState(new Date());
   const [note, setNote] = useState("");
   const [location, setLocation] = useState("");
-  const [loadnerCarRequest, setLoadnerCarRequest] = useState(false);
+  const [loanerCarRequest, setLoanerCarRequest] = useState(null);
   const [noteError, setNoteError] = useState("");
   const [locationError, setLocationError] = useState("");
-  const [loadnerCarRequestError, setLoadnerCarRequestError] = useState("");
+  const [loanerCarRequestError, setLoanerCarRequestError] = useState("");
   const [showCustomerConfirmation, setShowCustomerConfirmation] =
     useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
@@ -163,11 +124,11 @@ export const ServiceDetailsScreen = ({ navigation }) => {
       setLocationError("");
     }
 
-    if (!loadnerCarRequest) {
-      setLoadnerCarRequestError("Loadner car request is required");
+    if (!loanerCarRequest) {
+      setLoanerCarRequestError("Loadner car request is required");
       isValid = false;
     } else {
-      setLoadnerCarRequestError("");
+      setLoanerCarRequestError("");
     }
 
     if (isValid) {
@@ -186,7 +147,7 @@ export const ServiceDetailsScreen = ({ navigation }) => {
           serviceTypeId: selectedServicePackage.servicePackageId,
           pickupLocation: location,
           vehicleId: selectedCar.carId,
-          valetVehicleRequest: loadnerCarRequest,
+          valetVehicleRequest: loanerCarRequest,
           notes: note,
           orderDeliveryDate: date,
           dealershipId: selectedDealership.dealershipId,
@@ -204,7 +165,7 @@ export const ServiceDetailsScreen = ({ navigation }) => {
 
   return (
     <>
-      <Container>
+      <Container keyboardShouldPersistTaps="handled">
         <HeaderTitleContainer>
           <LabelComponent inverted={true} title={true}>
             Genesis Model G70 2023
@@ -217,126 +178,149 @@ export const ServiceDetailsScreen = ({ navigation }) => {
         <PositionedImage
           source={require("../../../../assets/genesis-car-img.png")}
         />
-        <InfoContainer>
-          <LabelComponent>Primary Information</LabelComponent>
-          <Spacer variant="top.medium" />
-          <AvatarContainer>
-            <UserProfileContainer>
-              <Avatar>
-                <AvatarImage
-                  source={{
-                    uri: profile.profilePicture.pictureLink,
-                  }}
-                />
-              </Avatar>
-              <Spacer variant="left.medium" />
-              <UserInfoContainer>
-                <LabelComponent>
-                  {profile.firstName} {profile.lastName}
-                </LabelComponent>
-                <Spacer variant="top.small" />
-                <ChipComponent>
-                  <LabelComponent
-                    styles={{
-                      fontSize: 12,
-                    }}
-                    title2={true}
-                  >
-                    Pending Order
-                  </LabelComponent>
-                </ChipComponent>
-              </UserInfoContainer>
-            </UserProfileContainer>
-            <UserInfoContainer>
-              <LabelComponent
-                styles={{
-                  fontSize: 12,
-                }}
-                title2={true}
-              >
-                UID 112233
-              </LabelComponent>
-              <Spacer variant="left.medium" />
-              <LabelComponent
-                styles={{
-                  fontSize: 12,
-                }}
-                title2={true}
-              >
-                5 Reviews
-              </LabelComponent>
-            </UserInfoContainer>
-          </AvatarContainer>
-          <Spacer variant="top.medium" />
-          <LabelComponent>Service Information</LabelComponent>
-          <Spacer variant="top.medium" />
-          <LabelComponent title2={true}>
-            #{selectedServicePackage.servicePackageName}
-          </LabelComponent>
-          <Spacer variant="top.xsmall" />
-          <LabelComponent title2={true}>
-            <LabelComponent>Description</LabelComponent>:{" "}
-            {selectedServicePackage.servicePackageDescription}
-          </LabelComponent>
-          <Spacer variant="top.large" />
-          <LabelComponent>Note</LabelComponent>
-          <Spacer variant="top.small" />
-          <InputComponent
-            label=""
-            placeholder="Anything you want to add?"
-            value={note}
-            onChangeText={(text) => setNote(text)}
-            height={250}
-          />
-          {noteError !== "" && <ErrorText>{noteError}</ErrorText>}
-          <Spacer variant="top.large" />
-          <LabelComponent>Service Date</LabelComponent>
-          <Spacer variant="top.small" />
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={{ flex: 1, width: "100%" }}
+        >
+          <InfoContainer>
+            <LabelComponent>Primary Information</LabelComponent>
+            <Spacer variant="top.medium" />
+            <AvatarDetailComponent
+              profileImage={profile.profilePicture.pictureLink}
+              firstName={profile.firstName}
+              lastName={profile.lastName}
+            />
+            <Spacer variant="top.medium" />
+            <LabelComponent>Service Information</LabelComponent>
+            <Spacer variant="top.medium" />
+            <LabelComponent title2={true}>
+              #{selectedServicePackage.servicePackageName}
+            </LabelComponent>
+            <Spacer variant="top.xsmall" />
+            <LabelComponent title2={true}>
+              <LabelComponent>Description</LabelComponent>:{" "}
+              {selectedServicePackage.servicePackageDescription}
+            </LabelComponent>
+            <Spacer variant="top.large" />
+            <LabelComponent>Note</LabelComponent>
+            <Spacer variant="top.small" />
+            <InputComponent
+              label=""
+              placeholder="Anything you want to add?"
+              value={note}
+              multiline={true}
+              onChangeText={(text) => setNote(text)}
+              isError={noteError !== ""}
+              errorText={noteError}
+            />
+            <Spacer variant="top.large" />
+            <LabelComponent>Service Date</LabelComponent>
+            <Spacer variant="top.small" />
 
-          <DateTimePickerContainer
-            onPress={() => setShowDateTimePicker(!showDateTimePicker)}
-          >
-            {showDateTimePicker && renderDateTimePicker()}
-            <LabelComponent title2={true}>{date.toDateString()}</LabelComponent>
-            <DateSvg width={24} height={24} />
-          </DateTimePickerContainer>
-          <Spacer variant="top.large" />
-          <LabelComponent>Service Location/Address</LabelComponent>
-          <Spacer variant="top.small" />
-          <InputComponent
-            label=""
-            placeholder="Service Location/Address"
-            value={location}
-            onChangeText={(text) => setLocation(text)}
-          />
-          {locationError !== "" && <ErrorText>{locationError}</ErrorText>}
-          <Spacer variant="top.large" />
-          <LabelComponent>Need Loaner Car?</LabelComponent>
-          <Spacer variant="top.small" />
-          <InputComponent
-            label=""
-            placeholder="Yes/No"
-            onChangeText={(text) => {
-              if (text.toLowerCase() === "yes" || text.toLowerCase() === "y") {
-                setLoadnerCarRequest(true);
-              } else if (
-                text.toLowerCase() === "no" ||
-                text.toLowerCase() === "n"
-              ) {
-                setLoadnerCarRequest(false);
-              } else {
-                setLoadnerCarRequest(null);
-              }
-            }}
-          />
-          {loadnerCarRequestError !== "" && (
-            <ErrorText>{loadnerCarRequestError}</ErrorText>
-          )}
-          <Spacer variant="top.large" />
-          <ButtonComponent title="Next" onPress={handleServiceDetails}>
-            <ProceedSvg isIcon={true} width={24} height={24} />
-          </ButtonComponent>
-        </InfoContainer>
+            <DateTimePickerContainer
+              onPress={() => setShowDateTimePicker(!showDateTimePicker)}
+            >
+              {showDateTimePicker && renderDateTimePicker()}
+              <LabelComponent title2={true}>
+                {date.toDateString()}
+              </LabelComponent>
+              <DateSvg width={24} height={24} />
+            </DateTimePickerContainer>
+            <Spacer variant="top.large" />
+            <LabelComponent>Service Location/Address</LabelComponent>
+            <Spacer variant="top.small" />
+            {/* <InputComponent
+              label=""
+              placeholder="Service Location/Address"
+              value={location}
+              onChangeText={(text) => setLocation(text)}
+              isError={locationError !== ""}
+              errorText={locationError}
+            /> */}
+            <GooglePlacesAutocomplete
+              placeholder="Pick Up Location/Address"
+              onPress={(data, details = null) => {
+                setLocation(details.description);
+              }}
+              query={{
+                key: "AIzaSyCQ_V0ZfCs0h_ruPXAUhpkh8P-IK89P_LM",
+                language: "en",
+                components: "country:ca",
+              }}
+              enablePoweredByContainer={false}
+              enableHighAccuracyLocation={true}
+              debounce={500}
+              listUnderlayColor={theme.colors.bg.secondary}
+              listLoaderComponent={() => (
+                <LabelComponent>Loading...</LabelComponent>
+              )}
+              listHoverColor={theme.colors.bg.secondary}
+              listEmptyComponent={() => (
+                <LabelComponent>No results found</LabelComponent>
+              )}
+              inbetweenComponent={() => <Spacer variant="top.large" />}
+              styles={{
+                container: {
+                  flex: 0,
+                  width: "100%",
+                  height: 60,
+                  borderWidth: 1,
+                  borderColor: theme.colors.formColors.border,
+                  borderRadius: theme.borderRadiuses[3],
+                },
+                textInput: {
+                  backgroundColor: "transparent",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: 60,
+                },
+                listView: {
+                  position: "absolute",
+                  top: 60,
+                  borderWidth: 1,
+                  borderColor: theme.colors.formColors.border,
+                  borderRadius: theme.borderRadiuses[3],
+                  backgroundColor: theme.colors.bg.primary,
+                  zIndex: 99999999,
+                  width: "100%",
+                },
+                textInputContainer: {
+                  backgroundColor: "transparent",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: 60,
+                },
+                separator: {
+                  height: 1,
+                  backgroundColor: theme.colors.bg.secondary,
+                },
+              }}
+            />
+            <Spacer variant="top.large" />
+            <LabelComponent>Need Loaner Vehicle?</LabelComponent>
+            <Spacer variant="top.small" />
+            {location !== "" && (
+              <Picker
+                selectedValue={loanerCarRequest}
+                onValueChange={(itemValue, itemIndex) =>
+                  setLoanerCarRequest(itemValue)
+                }
+                mode="dropdown"
+              >
+                <Picker.Item label="Select Yes/No" value={null} />
+                <Picker.Item label="Yes" value={true} />
+                <Picker.Item label="No" value={false} />
+              </Picker>
+            )}
+            {!loanerCarRequestError && (
+              <ErrorText>{loanerCarRequestError}</ErrorText>
+            )}
+            <Spacer variant="top.large" />
+            <ButtonComponent title="Next" onPress={handleServiceDetails}>
+              <ProceedSvg isIcon={true} width={24} height={24} />
+            </ButtonComponent>
+          </InfoContainer>
+        </KeyboardAvoidingView>
       </Container>
       {showCustomerConfirmation && (
         <OverlayComponent

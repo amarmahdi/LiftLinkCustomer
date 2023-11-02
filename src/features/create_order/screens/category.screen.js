@@ -151,6 +151,7 @@ export const CategoryScreen = ({ navigation }) => {
           onPress={() => {
             if (isObjEmpty(selected)) {
               Alert.alert("Alert!", "Please select a service package.");
+              return;
             }
             addServicePackage(selected);
             navigation.navigate("ServiceDetail");

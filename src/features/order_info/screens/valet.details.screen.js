@@ -4,7 +4,6 @@ import { LabelComponent } from "../../../components/typography/label.component";
 import { LabelFormComponent as Label } from "../../../components/typography/label.form.component";
 import styled from "styled-components/native";
 import { Spacer } from "../../../components/utils/spacer.component";
-import { AvatarComponent } from "../../../components/utils/avatar.component";
 import CalendarIcon from "../../../../assets/svgs/calendar";
 import { ButtonComponent } from "../../../components/button.component";
 import { CustomerContext } from "../../../infrastructure/service/customer/context/customer.context";

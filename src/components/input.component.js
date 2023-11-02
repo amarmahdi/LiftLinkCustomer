@@ -4,7 +4,7 @@ import { TextInput } from "react-native-paper";
 import React from "react";
 import { Spacer } from "./utils/spacer.component";
 
-const InputField = styled(TextInput)`
+const InputField = styled.TextInput`
   background-color: ${(props) => props.theme.colors.bg.primary};
   border-radius: ${(props) => props.theme.borderRadiuses[3]};
   border-width: 1px;
@@ -14,7 +14,7 @@ const InputField = styled(TextInput)`
       : props.theme.colors.formColors.error};
   width: 100%;
   height: ${(props) => props.height || "60px"};
-  max-height: ${(props) => props.height || "60px"};
+  padding: 12px;
 `;
 
 const ErrorText = styled.Text`
@@ -22,7 +22,7 @@ const ErrorText = styled.Text`
   font-size: ${(props) => props.theme.fontSizes.caption};
 `;
 
-export const InputComponent = ({ ...props }) => {
+export const InputComponent = ({ multiline = false, ...props }) => {
   return (
     <>
       <InputField
@@ -32,8 +32,10 @@ export const InputComponent = ({ ...props }) => {
         underlineColor="transparent"
         textColor="black"
         cursorColor="black"
+        multiline={multiline}
         placeholderTextColor={(props) => props.theme.colors.formColors.border}
         secureTextEntry={props.secure}
+        height={multiline ? "180px" : null}
         {...props}
       />
       <Spacer variant="top.small" />
