@@ -33,12 +33,6 @@ const OverlayContent = styled.View`
   border-radius: 20px;
 `;
 
-// const ButtonContainer = styled.View`
-//   flex-direction: row;
-//   justify-content: space-between;
-//   margin-top: 20px;
-// `;
-
 const CancelButton = styled.TouchableOpacity`
   background-color: ${(props) => props.theme.colors.bg.inverse};
   position: absolute;
@@ -78,9 +72,9 @@ export const OverlayComponent = ({
               <CancelSvg width={24} height={24} />
             </CancelButton>
             <ChildrenContainer>{children}</ChildrenContainer>
-            <ConfirmButton onPress={onConfirm} title={btnText || "Confirm"}>
+            <ButtonComponent onPress={onConfirm} title={btnText || "Confirm"}>
               <ConfirmSvg isIcon={true} width={24} height={24} />
-            </ConfirmButton>
+            </ButtonComponent>
           </OverlayContent>
         </Overlay>
       )}

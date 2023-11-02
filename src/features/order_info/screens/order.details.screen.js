@@ -13,14 +13,18 @@ import { format } from "date-fns";
 import { ValetContainer } from "../../../components/valet.container.component";
 import LogOutIcon from "../../../../assets/svgs/logout";
 import { isObjEmpty } from "../../main/screen/main.screen";
+import { ChipComponent } from "../../../components/utils/chip.component";
 
 const InfoContainer = styled.View`
   flex-direction: column;
   width: 100%;
-  padding: 20px;
+  padding-top: 40px;
   background-color: ${(props) => props.theme.colors.bg.primary};
   border-top-left-radius: 40px;
   border-top-right-radius: 40px;
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-bottom: 30px;
 `;
 
 const AvatarContainer = styled.View`
@@ -56,55 +60,42 @@ const UserProfileContainer = styled.View`
   height: 100px;
 `;
 
-const Chip = styled.View`
-  padding-top: 2px;
-  padding-bottom: 2px;
-  padding-left: 12px;
-  padding-right: 12px;
-  dipaly: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 40px;
-  background: rgba(99, 163, 117, 0.36);
-`;
-
 export const OrderDetailsScreen = ({ navigation }) => {
   const { profile } = useContext(CustomerContext);
   const {
     selectedOrder,
-    getValet,
-    getValetLoading,
-    getValetData,
-    getValetError,
+    // get valet
+    // get valet
+    onGetValet,
     valet,
-    setValet,
+    valetLoading,
+    valetError,
+    valetErrorMsg,
+    // get assigned order
+    onGetAssignedOrder,
+    assignedOrder,
+    setAssignedOrder,
+    assignedOrderLoading,
+    assignedOrderError,
   } = useContext(ServiceContext);
   const [showValetBtn, setShowValetBtn] = useState(false);
 
   useEffect(() => {
-    getValet({
-      variables: {
-        orderId: selectedOrder.orderId,
-      },
-    });
+    if (!isObjEmpty(selectedOrder) && isObjEmpty(valet)) {
+      onGetValet(selectedOrder.orderId);
+      onGetAssignedOrder(selectedOrder.orderId);
+    }
   }, []);
 
   useEffect(() => {
-    if (!getValetLoading) {
-      console.log("getValetData", selectedOrder);
-      if (!isObjEmpty(getValetData)) {
-        setValet(getValetData);
-        setShowValetBtn(true);
-      }
+    if (valetError) {
+      console.log("error", valetErrorMsg);
     }
-  }, [getValetLoading]);
+  }, [valetError]);
 
   useEffect(() => {
-    console.log("getValetError", getValetError);
-    if (getValetError) {
-      setShowValetBtn(false);
-    }
-  }, [getValetError]);
+    console.log(valetLoading, "############");
+  }, [valetLoading]);
 
   return (
     <ValetContainer>
@@ -126,7 +117,7 @@ export const OrderDetailsScreen = ({ navigation }) => {
                 {profile.firstName} {profile.lastName}
               </LabelComponent>
               <Spacer variant="top.small" />
-              <Chip>
+              <ChipComponent>
                 <LabelComponent
                   styles={{
                     fontSize: 12,
@@ -135,7 +126,7 @@ export const OrderDetailsScreen = ({ navigation }) => {
                 >
                   {profile.accountType.toUpperCase()}
                 </LabelComponent>
-              </Chip>
+              </ChipComponent>
             </UserInfoContainer>
           </UserProfileContainer>
           <UserInfoContainer>
@@ -148,7 +139,7 @@ export const OrderDetailsScreen = ({ navigation }) => {
               Order Status
             </LabelComponent>
             <Spacer variant="left.medium" />
-            <Chip>
+            <ChipComponent>
               <LabelComponent
                 styles={{
                   fontSize: 12,
@@ -157,49 +148,79 @@ export const OrderDetailsScreen = ({ navigation }) => {
               >
                 {selectedOrder.orderStatus.toUpperCase()}
               </LabelComponent>
-            </Chip>
+            </ChipComponent>
           </UserInfoContainer>
         </AvatarContainer>
+        <Spacer variant="top.large" />
+        <LabelComponent>Dealership</LabelComponent>
+        <Spacer variant="top.medium" />
+        <LabelComponent title2={true}>
+          #{selectedOrder.dealership.dealershipName}
+        </LabelComponent>
         <Spacer variant="top.large" />
         <LabelComponent>Requested Service</LabelComponent>
         <Spacer variant="top.medium" />
         <LabelComponent title2={true}>
-          {selectedOrder.serviceType.servicePackageName}
+          #{selectedOrder.serviceType.servicePackageName}
         </LabelComponent>
         <Spacer variant="top.large" />
         <LabelComponent>Service Delivery Date</LabelComponent>
         <Spacer variant="top.medium" />
         <LabelComponent title2={true}>
+          #
           {format(
             new Date(selectedOrder.orderDeliveryDate),
             "EEE, MMM dd yyyy"
           )}
         </LabelComponent>
         <Spacer variant="top.large" />
+        <LabelComponent>Note</LabelComponent>
+        <Spacer variant="top.medium" />
+        <LabelComponent title2={true}>#{selectedOrder.notes}</LabelComponent>
+        <Spacer variant="top.large" />
         <LabelComponent>Pick-up Location</LabelComponent>
         <Spacer variant="top.medium" />
         <LabelComponent title2={true}>
-          {selectedOrder.pickupLocation}
+          #{selectedOrder.pickupLocation}
         </LabelComponent>
         <Spacer variant="top.large" />
         <LabelComponent>Vehicle Info</LabelComponent>
         <Spacer variant="top.medium" />
         <LabelComponent title2={true}>
-          {selectedOrder.vehicle.carMake} {selectedOrder.vehicle.carModel}
+          #{selectedOrder.vehicle.carMake} {selectedOrder.vehicle.carModel}
         </LabelComponent>
         <LabelComponent title2={true}>
-          {selectedOrder.vehicle.plateNumber}
+          #{selectedOrder.vehicle.plateNumber}
         </LabelComponent>
-
         <Spacer variant="top.large" />
-        {showValetBtn && (
-          <ButtonComponent
-            title="View Valet Info"
-            onPress={() => navigation.navigate("Valet")}
-          >
-            <LogOutIcon width={24} height={24} />
-          </ButtonComponent>
+        {valetLoading && (
+          <>
+            <LabelComponent title2={true}>
+              Fetching valet service data...
+            </LabelComponent>
+          </>
         )}
+        {!valetLoading && !isObjEmpty(valet) && (
+          <>
+            <LabelComponent title={true}>Valet Service Info</LabelComponent>
+            <Spacer variant="top.large" />
+            <LabelComponent>Valet Status</LabelComponent>
+            <Spacer variant="top.medium" />
+            <ChipComponent>
+              <LabelComponent title2={true} inverted={true}>
+                {valet.valetStatus.split("_").join(" ")}
+              </LabelComponent>
+            </ChipComponent>
+            <Spacer variant="top.large" />
+            <ButtonComponent
+              title="Valet Details"
+              onPress={() => navigation.navigate("ValetDetails")}
+            >
+              <LogOutIcon width={24} height={24} />
+            </ButtonComponent>
+          </>
+        )}
+        <Spacer variant="top.large" />
       </InfoContainer>
     </ValetContainer>
   );

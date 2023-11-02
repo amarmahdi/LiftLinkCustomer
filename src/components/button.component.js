@@ -33,24 +33,56 @@ const HorizontalLine = styled.View`
   border-style: solid;
 `;
 
+const ButtonContainer = styled.View`
+  padding-top: 20px;
+  width: 100%;
+`;
+
+const ButtonContainerAbsolute = styled.View`
+  padding-top: 20px;
+  width: 100%;
+  background-color: ${(props) => props.theme.colors.bg.primary};
+  position: absolute;
+  bottom: 20px;
+  padding-left: 30px;
+  padding-right: 30px;
+`;
+
 export const ButtonComponent = ({
   children,
   title = "",
   background,
+  absolute = false,
   ...props
 }) => {
-
   // useEffect(() => {
   //   console.log("ButtonComponent props: ", children);
   // }, []);
 
   return (
-    <StyledButton {...props} background={background}>
-      {title && <StyledButtonText>{title}</StyledButtonText>}
-      <Spacer variant={"left.large"} />
-      <HorizontalLine />
-      <Spacer variant={"left.large"} />
-      {children}
-    </StyledButton>
+    <>
+      {!absolute && (
+        <ButtonContainer>
+          <StyledButton {...props} background={background}>
+            {title && <StyledButtonText>{title}</StyledButtonText>}
+            <Spacer variant={"left.large"} />
+            <HorizontalLine />
+            <Spacer variant={"left.large"} />
+            {children}
+          </StyledButton>
+        </ButtonContainer>
+      )}
+      {absolute && (
+        <ButtonContainerAbsolute>
+          <StyledButton {...props} background={background}>
+            {title && <StyledButtonText>{title}</StyledButtonText>}
+            <Spacer variant={"left.large"} />
+            <HorizontalLine />
+            <Spacer variant={"left.large"} />
+            {children}
+          </StyledButton>
+        </ButtonContainerAbsolute>
+      )}
+    </>
   );
 };

@@ -6,20 +6,13 @@ import { ButtonComponent } from "../../../components/button.component";
 import { AuthContext } from "../../../infrastructure/service/authentication/context/auth.context";
 import { Alert } from "react-native";
 import { CustomerContext } from "../../../infrastructure/service/customer/context/customer.context";
+import LogOutIcon from "../../../../assets/svgs/logout";
 
 const Container = styled.View`
   flex: 1;
   justify-content: center;
   align-items: center;
   background-color: black;
-`;
-
-const CarImg = styled.Image`
-  width: 164%;
-  margin-left: -60%;
-  object-fit: contain;
-  background-color: black;
-  z-index: 1;
 `;
 
 const OverlayImg = styled.Image`
@@ -30,15 +23,6 @@ const OverlayImg = styled.Image`
   position: absolute;
   z-index: 2;
   opacity: 0.5;
-`;
-
-const ForegroundOverlay = styled.View`
-  width: 100%;
-  height: 100%;
-  background-color: black;
-  position: absolute;
-  z-index: 3;
-  opacity: 0.7;
 `;
 
 const LabelContainer = styled.View`
@@ -129,7 +113,9 @@ export const Splash = ({ navigation }) => {
         <ButtonComponent
           title="Get Started"
           onPress={async () => await handleGetStarted()}
-        />
+        >
+          <LogOutIcon width={30} height={30} />
+        </ButtonComponent>
       </LabelContainer>
     </Container>
   );

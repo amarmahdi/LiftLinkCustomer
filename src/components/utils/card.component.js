@@ -6,6 +6,7 @@ import CalendarIcon from "../../../assets/svgs/calendar2";
 import { LabelComponent } from "../typography";
 import { format } from "date-fns";
 import { isObjEmpty } from "../../features/main/screen/main.screen";
+import { ChipComponent } from "./chip.component";
 
 const CardItem = styled.TouchableOpacity`
   flex-direction: column;
@@ -76,18 +77,6 @@ const CardPadding = styled.View`
 const LabelContainer = styled.View`
   width: 100%;
   padding-right: 10px;
-`;
-
-const Chip = styled.View`
-  padding-top: 2px;
-  padding-bottom: 2px;
-  padding-left: 12px;
-  padding-right: 12px;
-  dipaly: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 40px;
-  background: ${(props) => props.theme.colors.buttonColors.primary};
 `;
 
 const FooterContainer = styled.View`
@@ -181,13 +170,13 @@ export const CardComponent = ({
             )}
             <Spacer variant="top.medium" />
             <FooterContainer>
-              <Chip>
+              <ChipComponent>
                 <LabelComponent inverted={true} title2={true}>
                   {data.order.orderStatus === "PENDING"
                     ? "New Order"
                     : "In Progress"}
                 </LabelComponent>
-              </Chip>
+              </ChipComponent>
               <Spacer variant="top.large" />
               <LabelComponent title2={true} inverted={true}>
                 {data.order.orderId.substring(0, 6).toUpperCase()}

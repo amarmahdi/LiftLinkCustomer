@@ -13,11 +13,6 @@ const Container = styled.View`
   width: 100%;
 `;
 
-const ErrorText = styled.Text`
-  color: ${(props) => props.theme.colors.ui.error};
-  font-size: ${(props) => props.theme.fontSizes.caption};
-`;
-
 export const SigninScreen = ({ navigation }) => {
   const {
     username,
@@ -48,10 +43,9 @@ export const SigninScreen = ({ navigation }) => {
             setUsername(text);
           }}
           isError={usernameError}
+          errorText={"Username required"}
         />
-        {usernameError && <ErrorText>Username required</ErrorText>}
-        <Spacer variant="top.small" />
-        <Spacer variant="top.small" />
+        <Spacer variant="top.medium" />
         <LabelFormComponent>Password</LabelFormComponent>
         <Spacer variant="top.xsmall" />
         <InputComponent
@@ -67,11 +61,10 @@ export const SigninScreen = ({ navigation }) => {
           }}
           secure
           isError={passwordError}
+          errorText={"Password required"}
         />
-        {passwordError && <ErrorText>Password Required</ErrorText>}
         <Spacer variant="top.xsmall" />
         <LabelFormComponent size="small">Forgot Password?</LabelFormComponent>
-        <Spacer variant="top.medium" />
         <Spacer variant="top.medium" />
       </Container>
     </>

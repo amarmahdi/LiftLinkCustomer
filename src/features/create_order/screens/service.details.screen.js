@@ -13,6 +13,7 @@ import ProceedSvg from "../../../../assets/svgs/proceed";
 import DateSvg from "../../../../assets/svgs/date";
 import { OverlayComponent } from "../../../components/overlay.component";
 import { Platform } from "react-native";
+import { ChipComponent } from "../../../components/utils/chip.component";
 
 const Container = styled.ScrollView`
   flex-direction: column;
@@ -27,6 +28,8 @@ const InfoContainer = styled.View`
   padding: 20px;
   background-color: ${(props) => props.theme.colors.bg.primary};
   padding-top: 100px;
+  padding-left: 30px;
+  padding-right: 30px;
   border-top-left-radius: 40px;
   border-top-right-radius: 40px;
 `;
@@ -82,17 +85,6 @@ const UserProfileContainer = styled.View`
   height: 100px;
 `;
 
-const Chip = styled.View`
-  padding-top: 2px;
-  padding-bottom: 2px;
-  padding-left: 12px;
-  padding-right: 12px;
-  dipaly: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 40px;
-  background: rgba(99, 163, 117, 0.36);
-`;
 const DateTimePickerInput = styled.TextInput`
   flex: 1;
   color: ${(props) => props.theme.colors.darkText.primary};
@@ -146,7 +138,7 @@ export const ServiceDetailsScreen = ({ navigation }) => {
     const currentDate = selectedDate || date;
     setDate(currentDate);
     setShowDateTimePicker(false);
-    console.log(currentDate)
+    console.log(currentDate);
   };
 
   const renderDateTimePicker = () => {
@@ -243,7 +235,7 @@ export const ServiceDetailsScreen = ({ navigation }) => {
                   {profile.firstName} {profile.lastName}
                 </LabelComponent>
                 <Spacer variant="top.small" />
-                <Chip>
+                <ChipComponent>
                   <LabelComponent
                     styles={{
                       fontSize: 12,
@@ -252,7 +244,7 @@ export const ServiceDetailsScreen = ({ navigation }) => {
                   >
                     Pending Order
                   </LabelComponent>
-                </Chip>
+                </ChipComponent>
               </UserInfoContainer>
             </UserProfileContainer>
             <UserInfoContainer>
@@ -301,11 +293,11 @@ export const ServiceDetailsScreen = ({ navigation }) => {
           <LabelComponent>Service Date</LabelComponent>
           <Spacer variant="top.small" />
 
-          <DateTimePickerContainer onPress={() => setShowDateTimePicker(!showDateTimePicker)} >
+          <DateTimePickerContainer
+            onPress={() => setShowDateTimePicker(!showDateTimePicker)}
+          >
             {showDateTimePicker && renderDateTimePicker()}
-            <LabelComponent title2={true}>
-              {date.toDateString()}
-            </LabelComponent>
+            <LabelComponent title2={true}>{date.toDateString()}</LabelComponent>
             <DateSvg width={24} height={24} />
           </DateTimePickerContainer>
           <Spacer variant="top.large" />

@@ -38,11 +38,6 @@ const ErrorText = styled.Text`
   font-size: ${(props) => props.theme.fontSizes.caption};
 `;
 
-const ButtonContainer = styled.View`
-  margin-top: 300px;
-  margin-bottom: 20px;
-`;
-
 const PositionedButtonComponent = styled(ButtonComponent)`
   position: absolute;
   bottom: 250px;
@@ -109,18 +104,18 @@ export const CustomerPhoneVerificationScreen = ({ navigation }) => {
           )}
           <Spacer variant="top.small" />
           <Spacer variant="top.small" />
-          <ButtonContainer>
-            <PositionedButtonComponent
-              title="Next"
-              onPress={async () => {
-                Keyboard.dismiss();
-                await fbOtp(phone, recaptchaVerifier).then((verificationId) => {
-                  setVerificationId(verificationId);
-                });
-              }}
-              icon={<RedirectIcon width={24} height={24} />}
-            />
-          </ButtonContainer>
+          <ButtonComponent
+            absolute={true}
+            title="Next"
+            onPress={async () => {
+              Keyboard.dismiss();
+              await fbOtp(phone, recaptchaVerifier).then((verificationId) => {
+                setVerificationId(verificationId);
+              });
+            }}
+          >
+            <RedirectIcon width={24} height={24} />
+          </ButtonComponent>
         </Container>
       )}
       {showCodeVerification && (
@@ -146,29 +141,29 @@ export const CustomerPhoneVerificationScreen = ({ navigation }) => {
           )}
           <Spacer variant="top.small" />
           <Spacer variant="top.small" />
-          <ButtonContainer>
-            <PositionedButtonComponent
-              title="Next"
-              onPress={async () => {
-                Keyboard.dismiss();
-                const credential = PhoneAuthProvider.credential(
-                  verificationId,
-                  verificationCode
-                );
-                await signInWithCredential(fbAuth, credential)
-                  .then(async (result) => {
-                    console.log(result, "from phone verification");
-                    await updatePhoneMutation(phone);
-                    setScreen(screens.names);
-                  })
-                  .catch((error) => {
-                    console.error(error, "from phone verification");
-                    showMessage(error.message);
-                  });
-              }}
-              icon={<RedirectIcon width={24} height={24} />}
-            />
-          </ButtonContainer>
+          <ButtonComponent
+            absolute={true}
+            title="Next"
+            onPress={async () => {
+              Keyboard.dismiss();
+              const credential = PhoneAuthProvider.credential(
+                verificationId,
+                verificationCode
+              );
+              await signInWithCredential(fbAuth, credential)
+                .then(async (result) => {
+                  console.log(result, "from phone verification");
+                  await updatePhoneMutation(phone);
+                  setScreen(screens.names);
+                })
+                .catch((error) => {
+                  console.error(error, "from phone verification");
+                  showMessage(error.message);
+                });
+            }}
+          >
+            <RedirectIcon width={24} height={24} />
+          </ButtonComponent>
         </Container>
       )}
     </>

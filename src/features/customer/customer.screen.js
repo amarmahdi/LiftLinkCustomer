@@ -13,16 +13,6 @@ import LogOutIcon from "../../../assets/svgs/logout";
 import styled from "styled-components/native";
 import { isObjEmpty } from "../main/screen/main.screen";
 
-const ButtonContainer = styled.View`
-  padding-top: 20px;
-  width: 100%;
-  padding-left: 30px;
-  padding-right: 30px;
-  background-color: ${(props) => props.theme.colors.bg.primary};
-  position: absolute;
-  bottom: 20px;
-`;
-
 export const screens = {
   profile: "profile",
   phoneVerification: "phoneVerification",
@@ -81,26 +71,25 @@ export const CustomerScreen = ({ children, navigation }) => {
       </MainContainer>
 
       {screen === "names" && (
-        <ButtonContainer>
-          <ButtonComponent
-            title="Next"
-            onPress={async () => {
-              const updateName = await updateNames();
-              if (updateName) {
-                if (isObjEmpty(profile.profilePicture))
-                  setScreen(screens.profile);
-                else navigation.navigate("Home");
-              } else {
-                Alert.alert(
-                  "Alert!",
-                  "Failed to update names. Please try again."
-                );
-              }
-            }}
-          >
-            <LogOutIcon width={24} height={24} />
-          </ButtonComponent>
-        </ButtonContainer>
+        <ButtonComponent
+          absolute={true}
+          title="Next"
+          onPress={async () => {
+            const updateName = await updateNames();
+            if (updateName) {
+              if (isObjEmpty(profile.profilePicture))
+                setScreen(screens.profile);
+              else navigation.navigate("Home");
+            } else {
+              Alert.alert(
+                "Alert!",
+                "Failed to update names. Please try again."
+              );
+            }
+          }}
+        >
+          <LogOutIcon width={24} height={24} />
+        </ButtonComponent>
       )}
     </ImageContainerProvider>
   );

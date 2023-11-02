@@ -25,13 +25,6 @@ const LabelContainer = styled.View`
   align-items: center;
 `;
 
-const ButtonContainer = styled.View`
-  padding-top: 20px;
-  width: 100%;
-  padding-left: 30px;
-  padding-right: 30px;
-`;
-
 export const AuthScreen = ({ navigation }) => {
   const {
     loading,
@@ -113,41 +106,39 @@ export const AuthScreen = ({ navigation }) => {
         {screen === "signup" && <SignupScreen navigation={navigation} />}
       </ScrollView>
       {screen === "signin" && (
-        <ButtonContainer>
-          <ButtonComponent
-            title="Sign In"
-            onPress={async () => {
-              if (username === "") setUsernameError(true);
-              if (password === "") setPasswordError(true);
-              if (!usernameError && !passwordError && username && password)
-                await handleLogin();
-            }}
-            loading={loadingState}
-          />
+        <ButtonComponent
+          title="Sign In"
+          onPress={async () => {
+            if (username === "") setUsernameError(true);
+            if (password === "") setPasswordError(true);
+            if (!usernameError && !passwordError && username && password)
+              await handleLogin();
+          }}
+          loading={loadingState}
+        >
           <LogOutIcon width={24} height={24} />
-        </ButtonContainer>
+        </ButtonComponent>
       )}
       {screen === "signup" && (
-        <ButtonContainer>
-          <ButtonComponent
-            title="Sign Up"
-            onPress={async () => {
-              if (username === "") setUsernameError(true);
-              if (password === "") setPasswordError(true);
-              if (email === "") setEmailError(true);
-              if (
-                !usernameError &&
-                !passwordError &&
-                !emailError &&
-                username &&
-                password &&
-                email
-              )
-                await onSignup(username, password, email);
-            }}
-          />
+        <ButtonComponent
+          title="Sign Up"
+          onPress={async () => {
+            if (username === "") setUsernameError(true);
+            if (password === "") setPasswordError(true);
+            if (email === "") setEmailError(true);
+            if (
+              !usernameError &&
+              !passwordError &&
+              !emailError &&
+              username &&
+              password &&
+              email
+            )
+              await onSignup(username, password, email);
+          }}
+        >
           <LogOutIcon width={24} height={24} />
-        </ButtonContainer>
+        </ButtonComponent>
       )}
     </MainContainer>
   );

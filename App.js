@@ -20,15 +20,14 @@ import { getMainDefinition } from "@apollo/client/utilities";
 import { ServiceContextProvider } from "./src/infrastructure/service/create_service/context/service.context";
 import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
 import { createClient } from "graphql-ws";
+import { SERVER_URL, WEB_SOCKET_URL, DEV_SERVER_URL } from "@env";
 
 // AsyncStorage.clear();
-const tunnel = false;
+const tunnel = true;
 
 const wsLink = new GraphQLWsLink(
   createClient({
-    url: tunnel
-      ? "wss://8316-198-161-203-4.ngrok-free.app/graphql/"
-      : "http://192.168.1.94:8000/graphql/",
+    url: tunnel ? "ws://178.128.224.133/graphql" : DEV_SERVER_URL,
     on: {
       connected: () => console.log("ws connected"),
       error: (e) => console.log("ws error", e),
@@ -51,9 +50,7 @@ const wsLink = new GraphQLWsLink(
 );
 
 const httpLink = createHttpLink({
-  uri: tunnel
-    ? "https://8316-198-161-203-4.ngrok-free.app/graphql/"
-    : "http://192.168.1.94:8000/graphql/",
+  uri: tunnel ? "http://178.128.224.133/graphql" : DEV_SERVER_URL,
 });
 
 const authLink = setContext(async ({ headers }) => {
@@ -106,7 +103,7 @@ export default function App() {
   } else {
     console.log("WebSocket is not connected");
   }
-
+  
   return (
     <ApolloProvider client={client}>
       <ThemeProvider theme={theme}>

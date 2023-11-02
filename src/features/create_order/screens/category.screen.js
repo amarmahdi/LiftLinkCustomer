@@ -1,13 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
-import ContentLoader, { Circle, Rect } from "react-content-loader/native";
-import { buttonSizes } from "../../../infrastructure/theme/sizes";
 import { ServiceContext } from "../../../infrastructure/service/create_service/context/service.context";
 import { isObjEmpty } from "../../main/screen/main.screen";
 import { MainContainer } from "../../../components/main.container.component";
 import styled from "styled-components/native";
 import { LabelComponent } from "../../../components/typography/label.component";
 import { ButtonComponent } from "../../../components/button.component";
-import LogOutIcon from "../../../../assets/svgs/logout";
 import { Spacer } from "../../../components/utils/spacer.component";
 import ProceedSvg from "../../../../assets/svgs/proceed";
 import CancelSvg from "../../../../assets/svgs/cancel";
@@ -70,14 +67,6 @@ const Content = styled.View`
   background-color: ${(props) => props.theme.colors.bg.primary};
 `;
 
-const ButtonContainer = styled.View`
-  width: 100%;
-  margin-top: 20px;
-  justify-content: center;
-  align-items: center;
-  display: flex;
-`;
-
 const Button = styled(ButtonComponent)`
   width: 80%;
 `;
@@ -136,16 +125,16 @@ export const CategoryScreen = ({ navigation }) => {
               onPress={() => {
                 setSelected(item);
               }}
-              >
+            >
               <Content key={item.servicePackageId + "_" + i}>
                 <RadioBtn selected={checkSelected(item)} />
-                <CardContainer  key={item.servicePackageId + "_" + i + 1}>
+                <CardContainer key={item.servicePackageId + "_" + i + 1}>
                   <TextContainer>
                     <LabelComponent title1={true}>
                       {item.servicePackageName}
                     </LabelComponent>
                     <LabelComponent title2={true}>
-                      {item.servicePackageDescription}
+                      {item.servicePackageDescription.substring(0, 100) + "..."}
                     </LabelComponent>
                   </TextContainer>
                 </CardContainer>
@@ -155,21 +144,20 @@ export const CategoryScreen = ({ navigation }) => {
           <Spacer variant="top.large" />
           <Spacer variant="top.large" />
           <Spacer variant="top.large" />
-          <ButtonContainer>
-            <Button
-              title="Proceed"
-              onPress={() => {
-                if (isObjEmpty(selected)) {
-                  Alert.alert("Alert!", "Please select a service package.");
-                }
-                addServicePackage(selected);
-                navigation.navigate("ServiceDetail");
-              }}
-            >
-              <ProceedSvg isIcon={true} width={24} height={24} />
-            </Button>
-          </ButtonContainer>
         </ScrollView>
+        <ButtonComponent
+          absolute={true}
+          title="Proceed"
+          onPress={() => {
+            if (isObjEmpty(selected)) {
+              Alert.alert("Alert!", "Please select a service package.");
+            }
+            addServicePackage(selected);
+            navigation.navigate("ServiceDetail");
+          }}
+        >
+          <ProceedSvg isIcon={true} width={24} height={24} />
+        </ButtonComponent>
       </MainContainer>
     </>
   );

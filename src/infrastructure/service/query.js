@@ -442,6 +442,10 @@ export const GET_STARTED_ORDERS = gql`
         servicePackageName
         dealershipId
       }
+      dealership {
+        dealershipId
+        dealershipName
+      }
       valetVehicleRequest
       vehicle {
         carMake
@@ -521,6 +525,60 @@ export const GET_VALET = gql`
         vehicleCheckId
         vehicleCheckStatus
       }
+    }
+  }
+`;
+
+export const GET_ASSIGNED_VALET = gql`
+  query ($orderId: String) {
+    getAssignedOrder(orderId: $orderId) {
+      assignId
+      acceptDate
+      acceptedById
+      assignStatus
+      customerId
+      valetVehicle {
+        available
+        carColor
+        carId
+        carImage {
+          imageId
+          imageLink
+        }
+        carInsurance
+        carMake
+        carModel
+        carRegistration
+        carType
+        carVin
+        carYear
+        createdDate
+        mileage
+        plateNumber
+        status
+        updatedDate
+      }
+    }
+  }
+`;
+
+export const GET_USER_BY_ID = gql`
+  query ($userId: String!) {
+    getUserInfoById(userId: $userId) {
+      accountType
+      createdAt
+      email
+      firstName
+      lastName
+      phoneNumber
+      profilePicture {
+        createdAt
+        isCurrent
+        pictureId
+        pictureLink
+      }
+      userId
+      username
     }
   }
 `;

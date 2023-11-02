@@ -4,6 +4,7 @@ import { CardComponent } from "../../../components/utils/card.component";
 import UploadBtnIcon from "../../../../assets/svgs/upload_btn";
 import * as ImagePicker from "expo-image-picker";
 import { ImageContainerContext } from "../utils/imageObjectContainer";
+import { ButtonComponent } from "../../../components/button.component";
 
 // const Caption = styled.Text`
 //   font-size: ${(props) => props.theme.fontSizes.body};
@@ -20,13 +21,6 @@ const CustomCard = styled.View`
 const Picture = styled.Image`
   height: 100%;
   border-radius: 20px;
-`;
-
-const ButtonContainer = styled.View`
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
 `;
 
 const Button = styled.TouchableOpacity`
@@ -93,10 +87,15 @@ export const CamCardComponent = ({ imageLink, _key, clearContainer }) => {
   };
 
   return (
-    <CardComponent key={_key} overrideChildren={true} bordered={true} size={{
-      height: 250,
-      width: "100%",
-    }}>
+    <CardComponent
+      key={_key}
+      overrideChildren={true}
+      bordered={true}
+      size={{
+        height: 250,
+        width: "100%",
+      }}
+    >
       <CustomCard>
         {image && !imageLink ? (
           <Picture
@@ -126,12 +125,10 @@ export const CamCardComponent = ({ imageLink, _key, clearContainer }) => {
               style={{ width: 180, height: 180, marginBottom: 10 }}
             />
           )}
-        <ButtonContainer>
-          <Button onPress={pickImage}>
-            <ButtonLabel>{image ? "Change Image" : "Upload Image"}</ButtonLabel>
-            <UploadBtnIcon width={20} height={20} />
-          </Button>
-        </ButtonContainer>
+        <ButtonComponent onPress={pickImage}>
+          <ButtonLabel>{image ? "Change Image" : "Upload Image"}</ButtonLabel>
+          <UploadBtnIcon width={20} height={20} />
+        </ButtonComponent>
       </CustomCard>
     </CardComponent>
   );

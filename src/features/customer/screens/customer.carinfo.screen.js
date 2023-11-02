@@ -66,14 +66,6 @@ const ErrorMessage = styled.Text`
   font-family: ${(props) => props.theme.fonts.title2};
 `;
 
-const ButtonContainer = styled.View`
-  width: 100%;
-  padding-left: 30px;
-  padding-right: 30px;
-  position: absolute;
-  bottom: 20px;
-`;
-
 export const CustomerCarInfoScreen = ({ navigation }) => {
   const [count, setCount] = useState([0]);
   const [progress, setProgress] = useState([0]);
@@ -379,9 +371,11 @@ export const CustomerCarInfoScreen = ({ navigation }) => {
             </ScrollView>
           </>
         </ScrollViewContainer>
-        <ButtonContainer>
-          <ButtonComponent title="Next" onPress={() => uploadImages()} />
-        </ButtonContainer>
+        <ButtonComponent
+          absolute={true}
+          title="Next"
+          onPress={() => uploadImages()}
+        />
       </>
     </KeyboardAvoidingView>
   );

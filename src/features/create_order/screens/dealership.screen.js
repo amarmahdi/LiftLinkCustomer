@@ -18,9 +18,10 @@ const Container = styled.View`
 `;
 
 const CardsContainer = styled.ScrollView`
-  flex-direction: row;
+  flex-direction: column;
   position: absolute;
-  bottom: 0;
+  top: 100px;
+  left: 0px;
   padding: 20px;
 `;
 
@@ -34,7 +35,7 @@ const SearchBarContainer = styled.View`
   background-color: ${(props) => props.theme.colors.bg.secondary};
   padding: 20px;
   position: absolute;
-  top: 300px;
+  top: 0px;
   z-index: 1;
   border-bottom-left-radius: 40px;
   border-bottom-right-radius: 40px;
@@ -112,7 +113,7 @@ export const DealershipScreen = ({ navigation }) => {
 
   return (
     <Container>
-      <MapView style={{ width: "100%", height: "100%" }} />
+      {/* <MapView style={{ width: "100%", height: "100%" }} /> */}
       <SearchBarContainer>
         <InputComponent
           placeholder={"Search..."}
@@ -121,7 +122,7 @@ export const DealershipScreen = ({ navigation }) => {
           }}
         />
       </SearchBarContainer>
-      <CardsContainer horizontal={true}>
+      <CardsContainer horizontal={false}>
         {dealerships.map((item) => (
           <>
             <SearchCardView

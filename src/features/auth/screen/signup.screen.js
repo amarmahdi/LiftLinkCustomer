@@ -1,16 +1,9 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import styled from "styled-components/native";
-import { Alert } from "react-native";
 import { AuthContext } from "../../../infrastructure/service/authentication/context/auth.context";
-import { MainContainer } from "../../../components/main.container.component";
-import {
-  LabelComponent,
-  LabelFormComponent,
-} from "../../../components/typography";
+import { LabelFormComponent } from "../../../components/typography";
 import { Spacer } from "../../../components/utils/spacer.component";
 import { InputComponent } from "../../../components/input.component";
-import { ButtonComponent } from "../../../components/button.component";
-import LogOutIcon from "../../../../assets/svgs/logout";
 
 const Container = styled.View`
   flex: 1;
@@ -20,24 +13,8 @@ const Container = styled.View`
   width: 100%;
 `;
 
-const ErrorText = styled.Text`
-  color: ${(props) => props.theme.colors.ui.error};
-  font-size: ${(props) => props.theme.fontSizes.caption};
-`;
-
-const LabelContainer = styled.View`
-  width: 100%;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-`;
-
 export const SignupScreen = ({ navigation }) => {
   const {
-    isAuthenticated,
-    onLogin,
-    loading,
-    err,
     username,
     setUsername,
     password,
@@ -70,10 +47,9 @@ export const SignupScreen = ({ navigation }) => {
             setUsername(text);
           }}
           isError={usernameError}
+          errorText={"Username required"}
         />
-        {usernameError && <ErrorText>Username required</ErrorText>}
-        <Spacer variant="top.small" />
-        <Spacer variant="top.small" />
+        <Spacer variant="top.medium" />
         <LabelFormComponent size={"100%"}>Email</LabelFormComponent>
         <Spacer variant="top.xsmall" />
         <InputComponent
@@ -88,10 +64,9 @@ export const SignupScreen = ({ navigation }) => {
             setEmail(text);
           }}
           isError={emailError}
+          errorText={"Email required"}
         />
-        {emailError && <ErrorText>Email required</ErrorText>}
-        <Spacer variant="top.small" />
-        <Spacer variant="top.small" />
+        <Spacer variant="top.medium" />
         <LabelFormComponent>Password</LabelFormComponent>
         <Spacer variant="top.xsmall" />
         <InputComponent
@@ -107,11 +82,10 @@ export const SignupScreen = ({ navigation }) => {
           }}
           secure
           isError={passwordError}
+          errorText={"Password required"}
         />
-        {passwordError && <ErrorText>Password Required</ErrorText>}
         <Spacer variant="top.xsmall" />
         <LabelFormComponent size="small">Forgot Password?</LabelFormComponent>
-        <Spacer variant="top.medium" />
         <Spacer variant="top.medium" />
       </Container>
     </>

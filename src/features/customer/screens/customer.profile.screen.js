@@ -23,18 +23,8 @@ const ScrollViewContainer = styled.ScrollView`
   padding-right: 40px;
 `;
 
-const ButtonContainer = styled.View`
-  padding-left: 30px;
-  padding-right: 30px;
-  width: 100%;
-  position: absolute;
-  bottom: 20px;
-`;
-
 export const CustomerProfileScreen = ({ navigation }) => {
-  const { profile, profileLoading, setScreen } = useContext(
-    CustomerContext
-  );
+  const { profile, profileLoading, setScreen } = useContext(CustomerContext);
   const { imageObject, clearImageObject } = useContext(ImageContainerContext);
   const [uploadImage] = useMutation(UPLOAD_PROFILE_PICTURE);
   const [progress, setProgress] = useState(0);
@@ -96,23 +86,23 @@ export const CustomerProfileScreen = ({ navigation }) => {
         </Container>
         <Spacer variant="top.large" />
       </ScrollViewContainer>
-      <ButtonContainer>
-        <ButtonComponent
-          title="Next"
-          onPress={async () => {
-            if (
-              typeof imageObject !== "undefined" &&
-              Object.keys(imageObject).length !== 0
-            ) {
-              await handleUpload();
-            } else {
-              setScreen(screens.carInfo);
-              clearImageObject();
-            }
-          }}
-          icon={<RedirectIcon width={24} height={24} />}
-        />
-      </ButtonContainer>
+      <ButtonComponent
+        absolute={true}
+        title="Next"
+        onPress={async () => {
+          if (
+            typeof imageObject !== "undefined" &&
+            Object.keys(imageObject).length !== 0
+          ) {
+            await handleUpload();
+          } else {
+            setScreen(screens.carInfo);
+            clearImageObject();
+          }
+        }}
+      >
+        <RedirectIcon width={24} height={24} />
+      </ButtonComponent>
     </>
   );
 };

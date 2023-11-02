@@ -10,6 +10,7 @@ import { Pressable } from "react-native";
 import { CustomerContext } from "../../../infrastructure/service/customer/context/customer.context";
 import { ServiceContext } from "../../../infrastructure/service/create_service/context/service.context";
 import { isObjEmpty } from "./main.screen";
+import { ChipComponent } from "../../../components/utils/chip.component";
 
 const AvatarContainer = styled.View`
   flex-direction: row;
@@ -35,9 +36,8 @@ const HomeContainer = styled.View`
   justify-content: flex-start;
   align-items: flex-start;
   width: 100%;
-  height: 100%;
-  position: absolute;
-  margin-top: 35%;
+  padding-left: 30px;
+  padding-right: 30px;
 `;
 
 const Image = styled.Image`
@@ -65,18 +65,12 @@ const CarDescription = styled.View`
   align-items: flex-start;
 `;
 
-const Line = styled.View`
-  width: 95%;
-  height: 1px;
-  background-color: ${(props) => props.theme.colors.text.primary};
-`;
-
 const List = styled.FlatList`
   width: 100%;
 `;
 
 const ListCard = styled.View`
-  width: 90%;
+  width: 100%;
   max-height: 600px;
   padding: 20px;
   margin-bottom: 40px;
@@ -92,22 +86,22 @@ const LabelContainer = styled.View`
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  padding: 20px;
+  padding-top: 20px;
 `;
 
 const CarImageContainer = styled.View`
   width: 100%;
-  border-radius: 20px;
   justify-content: center;
   align-items: center;
+  height: 250px;
 `;
 
 const CarImage = styled.Image`
+  border-radius: 20px;
   width: 100%;
-  height: 80%;
+  height: 100%;
   resize-mode: cover;
   border-radius: 20px;
-  margin-bottom: 40px;
 `;
 
 const ScrollView = styled.ScrollView`
@@ -121,27 +115,34 @@ const ScrollViewContainer = styled.View`
   align-items: center;
 `;
 
+const DescriptionContainer = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+`;
+
 export const HomeScreen = ({ navigation }) => {
   const { profile } = useContext(CustomerContext);
   const {
     setSelectedCar,
-    getStartedOrders,
-    getStartedOrdersData,
-    selectedOrder,
+    onGetStartedOrders,
+    setStartedOrders,
+    startedOrders,
+    startedOrdersLoading,
+    startedOrderError,
     setSelectedOrder,
   } = useContext(ServiceContext);
-  const [startedServices, setStartedServices] = useState([]);
 
   useEffect(() => {
-    getStartedOrders();
+    onGetStartedOrders();
   }, []);
 
   useEffect(() => {
-    if (!isObjEmpty(getStartedOrdersData)) {
-      console.log("getStartedOrdersData", getStartedOrdersData.getOrdersByUser);
-      setStartedServices(getStartedOrdersData.getOrdersByUser);
+    if (startedOrderError) {
+      console.log("error", startedOrderError);
     }
-  }, [getStartedOrdersData]);
+  }, [startedOrderError]);
 
   return (
     <MainContainer
@@ -151,88 +152,105 @@ export const HomeScreen = ({ navigation }) => {
       showMenu={true}
       imageUrl={profile.profilePicture.pictureLink}
     >
-      <Spacer variant="top.medium" />
-      <LabelContainer>
-        <LabelComponent title2={true}>My Cars</LabelComponent>
-        <Pressable onPress={() => navigation.navigate("AddCar")}>
-          <LabelComponent>Add Car</LabelComponent>
-        </Pressable>
-      </LabelContainer>
-      <ScrollViewContainer>
-        <ScrollView
-          contentContainerStyle={{
-            alignItems: "center",
-            justifyContent: "flex-start",
-          }}
-          pinchGestureEnabled={true}
-        >
-          {profile.car.map((item) => {
-            if (!isObjEmpty(startedServices)) {
-              return startedServices.map((service) => {
-                if (
-                  service.vehicle.carImage.imageId === item.carImage.imageId
-                ) {
-                  return (
-                    <ListContainer
-                      onPress={async () => {
-                        await setSelectedOrder(service);
-                        navigation.navigate("Details");
-                      }}
-                    >
-                      <ListCard>
-                        <ListComponent>
-                          <CarDescription>
-                            <LabelComponent>
-                              {item.carMake} {item.carModel}
-                            </LabelComponent>
-                            <LabelComponent title2={true}>
-                              You have a service in progress
-                            </LabelComponent>
-                          </CarDescription>
-                          <RedirectIcon width={24} height={24} />
-                        </ListComponent>
-                        <CarImageContainer>
-                          <CarImage source={{ uri: item.carImage.imageLink }} />
-                        </CarImageContainer>
-                      </ListCard>
-                    </ListContainer>
-                  );
-                }
-              });
-            }
-            return (
-              <ListContainer
-                onPress={async () => {
-                  await setSelectedCar(item);
-                  navigation.navigate("Service");
-                }}
-              >
-                <ListCard>
-                  <ListComponent>
-                    <CarDescription>
-                      <LabelComponent>
-                        {item.carMake} {item.carModel}
-                      </LabelComponent>
-                      <LabelComponent title2={true}>
-                        Start service
-                      </LabelComponent>
-                    </CarDescription>
-                    <RedirectIcon width={24} height={24} />
-                  </ListComponent>
-                  <CarImageContainer>
-                    <CarImage source={{ uri: item.carImage.imageLink }} />
-                  </CarImageContainer>
-                </ListCard>
-              </ListContainer>
-            );
-          })}
-          <ListContainer
-            style={{
-              height: 250,
+      <HomeContainer>
+        <Spacer variant="top.medium" />
+        <LabelContainer>
+          <LabelComponent title2={true}>My Cars</LabelComponent>
+          <Pressable onPress={() => navigation.navigate("AddCar")}>
+            <LabelComponent>Add Car</LabelComponent>
+          </Pressable>
+        </LabelContainer>
+        <ScrollViewContainer>
+          <ScrollView
+            contentContainerStyle={{
+              alignItems: "center",
+              justifyContent: "flex-start",
             }}
-          />
-        </ScrollView>
-      </ScrollViewContainer>
+            pinchGestureEnabled={true}
+          >
+            {!startedOrdersLoading &&
+              profile.car.map((item) => {
+                if (!isObjEmpty(startedOrders)) {
+                  return startedOrders.map((service) => {
+                    if (
+                      service.vehicle.carImage.imageId === item.carImage.imageId
+                    ) {
+                      return (
+                        <ListContainer
+                          onPress={async () => {
+                            await setSelectedOrder(service);
+                            navigation.navigate("Details");
+                          }}
+                        >
+                          <ListCard>
+                            <ListComponent>
+                              <CarDescription>
+                                <LabelComponent>
+                                  {item.carMake} {item.carModel}
+                                </LabelComponent>
+                                <LabelComponent title2={true}>
+                                  You have a service in progress
+                                </LabelComponent>
+                              </CarDescription>
+                              <RedirectIcon width={24} height={24} />
+                            </ListComponent>
+                            <Spacer variant="top.medium" />
+                            <CarImageContainer>
+                              <CarImage
+                                source={{ uri: item.carImage.imageLink }}
+                              />
+                            </CarImageContainer>
+                            <Spacer variant="top.medium" />
+                            <DescriptionContainer>
+                              <LabelComponent>
+                                {service.serviceType.servicePackageName}
+                              </LabelComponent>
+                              <ChipComponent>
+                                <LabelComponent inverted={true}>
+                                  {service.orderStatus}
+                                </LabelComponent>
+                              </ChipComponent>
+                            </DescriptionContainer>
+                          </ListCard>
+                        </ListContainer>
+                      );
+                    }
+                  });
+                }
+                return (
+                  <ListContainer
+                    onPress={async () => {
+                      await setSelectedCar(item);
+                      navigation.navigate("Service");
+                    }}
+                  >
+                    <ListCard>
+                      <ListComponent>
+                        <CarDescription>
+                          <LabelComponent>
+                            {item.carMake} {item.carModel}
+                          </LabelComponent>
+                          <LabelComponent title2={true}>
+                            Start service
+                          </LabelComponent>
+                        </CarDescription>
+                        <RedirectIcon width={24} height={24} />
+                      </ListComponent>
+                      <CarImageContainer>
+                        <CarImage source={{ uri: item.carImage.imageLink }} />
+                      </CarImageContainer>
+                    </ListCard>
+                  </ListContainer>
+                );
+              })}
+            <ListContainer
+              style={{
+                height: 250,
+              }}
+            />
+          </ScrollView>
+        </ScrollViewContainer>
+      </HomeContainer>
     </MainContainer>
   );
 };

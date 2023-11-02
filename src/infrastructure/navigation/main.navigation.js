@@ -10,6 +10,8 @@ import styled from "styled-components/native";
 import { MainScreen } from "../../features/main/screen/main.screen";
 import { ServiceNavigation } from "./service.navigation";
 import { OrderDetailsScreen } from "../../features/order_info/screens/order.details.screen";
+import { ValetDetailsScreen } from "../../features/order_info/screens/valet.details.screen";
+import { MapScreen } from "../../features/navigation_service/screen/map.screen";
 
 const Stack = createStackNavigator();
 
@@ -28,6 +30,8 @@ export const MainNavigator = () => {
         <Stack.Screen name="Profile" component={CustomerNavigation} />
         <Stack.Screen name="Service" component={ServiceNavigation} />
         <Stack.Screen name="Details" component={OrderDetailsScreen} />
+        <Stack.Screen name="ValetDetails" component={ValetDetailsScreen} />
+        <Stack.Screen name="Map" component={MapScreen} />
       </>
     </Stack.Navigator>
   );
